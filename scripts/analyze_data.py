@@ -36,8 +36,8 @@ def clean_data() -> pd.DataFrame:
     data["is_home_run"] = data["events"].eq("home_run")
     data["is_strikeout"] = data["events"].isin(STRIKEOUTS)
     data["is_strike"] = data["description"].isin(STRIKE_DESCRIPTIONS)
-    data["is_batted_ball"] = data["launch_speed"].notna()
-    data["is_hard_hit"] = data["launch_speed"].ge(95)
+    data["is_batted_ball"] = data["description"].eq("hit_into_play")
+    data["is_hard_hit"] = data["is_batted_ball"] & data["launch_speed"].ge(95)
     return data
 
 
@@ -162,7 +162,7 @@ def main() -> None:
         "definitions": {
             "hit_rate": "hits divided by completed plate appearances; hits are singles, doubles, triples, and home runs",
             "strike_rate": "pitches whose description is a called strike, foul, swinging strike, or related strike outcome, divided by all pitches",
-            "hard_hit_rate": "batted balls with launch_speed at least 95 mph divided by batted balls with launch_speed",
+            "hard_hit_rate": "balls put into play with launch_speed at least 95 mph divided by balls put into play with launch_speed",
             "home_run_rate": "home runs divided by completed plate appearances",
         },
         "pitch_mix": round_records(pitch_mix),

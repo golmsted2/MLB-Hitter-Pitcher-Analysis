@@ -63,7 +63,7 @@ function isStrike(row) {
 }
 
 function isBattedBall(row) {
-  return Number.isFinite(Number(row.launch_speed));
+  return row.description === "hit_into_play" && Number.isFinite(Number(row.launch_speed));
 }
 
 function aggregateRows(rows) {

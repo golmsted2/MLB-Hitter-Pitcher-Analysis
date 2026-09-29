@@ -6,7 +6,7 @@
     "pitchers": 829,
     "batters": 648,
     "avg_speed": 89.33,
-    "hard_hit_rate": 25.47,
+    "hard_hit_rate": 40.94,
     "plate_appearances": 38708,
     "hits": 8471,
     "home_runs": 1149,
@@ -15,7 +15,7 @@
   "definitions": {
     "hit_rate": "hits divided by completed plate appearances; hits are singles, doubles, triples, and home runs",
     "strike_rate": "pitches whose description is a called strike, foul, swinging strike, or related strike outcome, divided by all pitches",
-    "hard_hit_rate": "batted balls with launch_speed at least 95 mph divided by batted balls with launch_speed",
+    "hard_hit_rate": "balls put into play with launch_speed at least 95 mph divided by balls put into play with launch_speed",
     "home_run_rate": "home runs divided by completed plate appearances"
   },
   "pitch_mix": [
@@ -143,8 +143,8 @@
       "avg_speed": 89.08,
       "avg_exit_velocity": 82.88,
       "strike_rate": 0.46,
-      "batted_balls": 9735,
-      "hard_hit_rate": 0.26
+      "batted_balls": 5234,
+      "hard_hit_rate": 0.4
     },
     {
       "month": "2025-05",
@@ -152,8 +152,8 @@
       "avg_speed": 89.33,
       "avg_exit_velocity": 82.89,
       "strike_rate": 0.46,
-      "batted_balls": 9960,
-      "hard_hit_rate": 0.25
+      "batted_balls": 5249,
+      "hard_hit_rate": 0.41
     },
     {
       "month": "2025-06",
@@ -161,8 +161,8 @@
       "avg_speed": 89.37,
       "avg_exit_velocity": 83.17,
       "strike_rate": 0.46,
-      "batted_balls": 9991,
-      "hard_hit_rate": 0.26
+      "batted_balls": 5273,
+      "hard_hit_rate": 0.42
     },
     {
       "month": "2025-07",
@@ -170,8 +170,8 @@
       "avg_speed": 89.49,
       "avg_exit_velocity": 83.15,
       "strike_rate": 0.46,
-      "batted_balls": 10023,
-      "hard_hit_rate": 0.26
+      "batted_balls": 5332,
+      "hard_hit_rate": 0.41
     },
     {
       "month": "2025-08",
@@ -179,8 +179,8 @@
       "avg_speed": 89.38,
       "avg_exit_velocity": 82.96,
       "strike_rate": 0.46,
-      "batted_balls": 10002,
-      "hard_hit_rate": 0.25
+      "batted_balls": 5266,
+      "hard_hit_rate": 0.4
     }
   ],
   "handedness": [
@@ -408,23 +408,23 @@
   "exit_velocity_bands": [
     {
       "exit_velocity_band": "0\u201379 mph",
-      "count": 20332
+      "count": 6005
     },
     {
       "exit_velocity_band": "80\u201389 mph",
-      "count": 10872
+      "count": 5236
     },
     {
       "exit_velocity_band": "90\u201394 mph",
-      "count": 4977
+      "count": 3548
     },
     {
       "exit_velocity_band": "95\u201399 mph",
-      "count": 5011
+      "count": 4083
     },
     {
       "exit_velocity_band": "100+ mph",
-      "count": 8519
+      "count": 7374
     }
   ]
 }

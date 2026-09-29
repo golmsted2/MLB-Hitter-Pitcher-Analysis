@@ -9,7 +9,7 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2021_2025.csv"
+DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2025_months.csv"
 SUMMARY_PATH = PROJECT_ROOT / "data" / "report_data.json"
 NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
@@ -77,8 +77,8 @@ def main() -> None:
         .head(10)
     )
 
-    season_summary = (
-        data.groupby("season")
+    month_summary = (
+        data.groupby("month")
         .agg(
             pitches=("pitcher", "size"),
             avg_speed=("release_speed", "mean"),
@@ -87,11 +87,11 @@ def main() -> None:
         )
         .reset_index()
     )
-    season_batted = batted.groupby("season").agg(
+    month_batted = batted.groupby("month").agg(
         batted_balls=("launch_speed", "size"),
         hard_hit_rate=("is_hard_hit", "mean"),
     )
-    season_summary = season_summary.merge(season_batted, on="season")
+    month_summary = month_summary.merge(month_batted, on="month")
 
     handedness = (
         data.groupby(["p_throws", "stand"], dropna=False)
@@ -148,7 +148,8 @@ def main() -> None:
     summary = {
         "headline": {
             "pitches": int(len(data)),
-            "seasons": int(data["season"].nunique()),
+            "months": int(data["month"].nunique()),
+            "season": int(data["season"].mode().iloc[0]),
             "pitchers": int(data["pitcher"].nunique()),
             "batters": int(data["batter"].nunique()),
             "avg_speed": round(float(data["release_speed"].mean()), 2),
@@ -166,7 +167,7 @@ def main() -> None:
         },
         "pitch_mix": round_records(pitch_mix),
         "speed_by_pitch": round_records(speed_by_pitch),
-        "season_summary": round_records(season_summary),
+        "month_summary": round_records(month_summary),
         "handedness": round_records(handedness),
         "top_pitchers": round_records(top_pitchers),
         "top_batters": round_records(top_batters),

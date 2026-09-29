@@ -30,7 +30,7 @@
         <p class="eyebrow">Interactive explorer</p>
         <h1>Find your matchup.</h1>
         <p>
-          Filter the five-season sample, change the measure, and see the comparison update in your
+          Filter the five-month 2025 sample, change the measure, and see the comparison update in your
           browser. Every number below is calculated from the pitch-level CSV loaded on this page.
         </p>
         <div class="loading-status" id="loading-status" role="status">Loading Statcast data…</div>
@@ -60,10 +60,10 @@
           <label class="control-field">Batter stance
             <select id="filter-stand"><option value="">All batter stances</option></select>
           </label>
-          <label class="control-field">Pitcher ID
+          <label class="control-field">Pitcher
             <select id="filter-pitcher"><option value="">All pitchers</option></select>
           </label>
-          <label class="control-field">Batter ID
+          <label class="control-field">Batter
             <select id="filter-batter"><option value="">All batters</option></select>
           </label>
         </div>
@@ -79,8 +79,8 @@
           </label>
           <label class="control-field switch-field">Break charts down by
             <select id="breakdown-select">
+              <option value="month" selected>Month</option>
               <option value="season">Season</option>
-              <option value="month">Month</option>
               <option value="pitch_type">Pitch type</option>
               <option value="p_throws">Pitcher hand</option>
               <option value="stand">Batter stance</option>
@@ -103,12 +103,12 @@
 
         <div class="dashboard-chart-grid">
           <section class="dashboard-card chart-card wide-card">
-            <div class="chart-card-heading"><div><p class="section-kicker">Comparison</p><h2 id="comparison-title">Pitch count by season</h2></div><span class="live-dot">Live</span></div>
+            <div class="chart-card-heading"><div><p class="section-kicker">Comparison</p><h2 id="comparison-title">Pitch count by month</h2></div><span class="live-dot">Live</span></div>
             <div class="dashboard-chart-wrap"><canvas id="comparison-chart" aria-label="Selected metric by selected breakdown"></canvas></div>
           </section>
           <section class="dashboard-card chart-card">
-            <div class="chart-card-heading"><div><p class="section-kicker">Trend</p><h2>Season trend</h2></div></div>
-            <div class="dashboard-chart-wrap"><canvas id="trend-chart" aria-label="Season trend"></canvas></div>
+            <div class="chart-card-heading"><div><p class="section-kicker">Trend</p><h2>Monthly trend</h2></div></div>
+            <div class="dashboard-chart-wrap"><canvas id="trend-chart" aria-label="Monthly trend"></canvas></div>
           </section>
           <section class="dashboard-card chart-card">
             <div class="chart-card-heading"><div><p class="section-kicker">Pitch mix</p><h2>Types in view</h2></div></div>
@@ -122,7 +122,7 @@
 
         <section class="dashboard-card table-card">
           <div class="chart-card-heading">
-            <div><p class="section-kicker">Numbers behind the view</p><h2 id="table-title">Summary by season</h2></div>
+            <div><p class="section-kicker">Numbers behind the view</p><h2 id="table-title">Summary by month</h2></div>
             <span class="table-note" id="table-note">—</span>
           </div>
           <div class="table-scroll">
@@ -142,6 +142,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="dashboard.js?v=3"></script>
+    <script src="dashboard.js?v=4"></script>
   </body>
 </html>

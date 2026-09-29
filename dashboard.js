@@ -200,7 +200,7 @@ function updateComparison(rows, metric, breakdown) {
 }
 
 function updateTrend(rows, metric) {
-  const groups = sortedGroups(groupRows(rows, "season"), "season", metric);
+  const groups = sortedGroups(groupRows(rows, "month"), "month", metric);
   const percentageAxis = metric === "strike_rate" || metric === "hard_hit_rate";
   replaceChart("trend", "trend-chart", {
     type: "line",
@@ -250,7 +250,7 @@ function updateDashboard() {
 function resetFilters() {
   filterKeys.forEach(([id]) => { document.getElementById(id).value = ""; });
   document.getElementById("metric-select").value = "count";
-  document.getElementById("breakdown-select").value = "season";
+  document.getElementById("breakdown-select").value = "month";
   updateDashboard();
 }
 
@@ -280,7 +280,7 @@ async function loadDashboardData() {
     }
 
     if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
-    const response = await fetch("data/mlb_statcast_2021_2025.csv?v=2", { cache: "no-store" });
+    const response = await fetch("data/mlb_statcast_2025_months.csv?v=3", { cache: "no-store" });
     if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
     const csvText = await response.text();
     const results = Papa.parse(csvText, {

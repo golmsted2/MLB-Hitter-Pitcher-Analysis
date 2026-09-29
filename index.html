@@ -6,7 +6,7 @@
     <title>Between the Lines | MLB Statcast</title>
     <meta
       name="description"
-      content="A pitch-by-pitch look at MLB pitcher and hitter matchups from 2021–2025."
+      content="A pitch-by-pitch look at MLB pitcher and hitter matchups across five months of the 2025 season."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -34,7 +34,7 @@
           <p class="eyebrow">Financial Data Analytics · Baseball edition</p>
           <h1>What happens between the pitcher and the hitter?</h1>
           <p class="hero-dek" id="hero-summary">
-            This report examines pitch-by-pitch MLB Statcast data from five April samples,
+            This report examines pitch-by-pitch MLB Statcast data from five monthly samples in 2025,
             looking for the patterns that connect pitch selection, velocity, handedness, and
             batted-ball outcomes.
           </p>
@@ -43,13 +43,13 @@
         <div class="hero-stamp" aria-hidden="true">
           <span>MLB</span>
           <strong>STATCAST</strong>
-          <small>2021—2025</small>
+          <small>2025 SEASON</small>
         </div>
       </section>
 
       <section class="headline-grid" id="headline-cards" aria-label="Headline numbers">
         <div class="headline-card"><span class="card-label">Pitches analyzed</span><strong data-headline="pitches">—</strong><span class="card-note">regular-season pitches</span></div>
-        <div class="headline-card"><span class="card-label">Seasons</span><strong data-headline="seasons">—</strong><span class="card-note">April 1 through May 1</span></div>
+        <div class="headline-card"><span class="card-label">Months</span><strong data-headline="months">—</strong><span class="card-note">April through August 2025</span></div>
         <div class="headline-card"><span class="card-label">Pitchers</span><strong data-headline="pitchers">—</strong><span class="card-note">unique MLB IDs</span></div>
         <div class="headline-card"><span class="card-label">Batters</span><strong data-headline="batters">—</strong><span class="card-note">unique MLB IDs</span></div>
         <div class="headline-card accent-card"><span class="card-label">Average pitch speed</span><strong data-headline="avg_speed">—</strong><span class="card-note">miles per hour</span></div>
@@ -61,8 +61,8 @@
         <p>
           Statcast turns a plate appearance into a sequence of measurable decisions. The pitcher
           chooses a pitch, the hitter chooses whether to swing, and the ball records what happened
-          next. The findings below focus on the April sample from each season, which keeps the
-          comparison consistent while still providing 150,000 pitch events.
+          next. The findings below focus on five monthly samples from the 2025 season, which keeps
+          the comparison within one season while still providing 150,000 pitch events.
         </p>
       </div>
 
@@ -72,8 +72,8 @@
           <div class="section-body">
             <h2>This is a large event-level panel, not a box-score snapshot.</h2>
             <p id="scale-copy">Loading the finding…</p>
-            <div class="chart-wrap"><canvas id="season-volume-chart" aria-label="Pitches by season"></canvas></div>
-            <p class="chart-caption">The published file uses a deterministic 30,000-pitch sample from the same month-long window in each season; differences in volume reflect the games and pitch counts recorded in that window.</p>
+            <div class="chart-wrap"><canvas id="season-volume-chart" aria-label="Pitches by month"></canvas></div>
+            <p class="chart-caption">The published file uses a deterministic 30,000-pitch sample from each month of April through August 2025; differences in volume reflect the games and pitch counts recorded in each month.</p>
           </div>
         </section>
 
@@ -100,10 +100,10 @@
         <section class="report-section" id="section-season">
           <div class="section-number">04</div>
           <div class="section-body">
-            <h2>Average pitch speed was highest in the 2025 April sample.</h2>
+            <h2>Pitch and contact metrics shift across the 2025 monthly samples.</h2>
             <p id="season-copy">Loading the finding…</p>
-            <div class="chart-wrap"><canvas id="season-metrics-chart" aria-label="Season average speed and exit velocity"></canvas></div>
-            <p class="chart-caption">The two lines use different units, so the chart is intended to show direction over time rather than compare their vertical heights.</p>
+            <div class="chart-wrap"><canvas id="season-metrics-chart" aria-label="Monthly average speed and exit velocity"></canvas></div>
+            <p class="chart-caption">The two lines use different units, so the chart is intended to show direction across the five months rather than compare their vertical heights.</p>
           </div>
         </section>
 
@@ -113,7 +113,7 @@
             <h2>Right-handed pitchers facing right-handed hitters form the largest matchup group.</h2>
             <p id="handedness-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="handedness-chart" aria-label="Pitch volume by pitcher and batter handedness"></canvas></div>
-            <p class="chart-caption">P = pitcher throwing hand; B = batter stance. MLB IDs are used in the source file so that player identity remains consistent across seasons.</p>
+            <p class="chart-caption">P = pitcher throwing hand; B = batter stance. MLB IDs are used in the source file so that player identity remains consistent across monthly samples.</p>
           </div>
         </section>
 
@@ -156,9 +156,9 @@
             <h3>Source and unit of observation</h3>
             <p>
               The data comes from MLB’s public Baseball Savant Statcast search export. One row is
-              one pitch in one regular-season game. The file covers April 1 through May 1 in each
-              season from 2021 through 2025. The time columns are <code>game_date</code>,
-              <code>month</code>, and <code>season</code>; the group columns are the MLB player IDs
+              one pitch in one regular-season game. The file covers April through August 2025. The
+              time columns are <code>game_date</code>, <code>month</code>, and <code>season</code>;
+              the group columns are the MLB player IDs
               in <code>pitcher</code> and <code>batter</code>.
             </p>
           </div>
@@ -194,6 +194,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="report.js?v=2"></script>
+    <script src="report.js?v=4"></script>
   </body>
 </html>

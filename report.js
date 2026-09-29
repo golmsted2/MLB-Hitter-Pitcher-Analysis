@@ -70,13 +70,13 @@ function renderHeadline(data) {
 
   setText(
     "hero-summary",
-    `This report examines ${formatNumber(headline.pitches)} pitch events from ${headline.seasons} April samples, asking how pitch selection, velocity, handedness, and batted-ball outcomes connect.`,
+    `This report examines ${formatNumber(headline.pitches)} pitch events from ${headline.months} monthly samples in the ${headline.season} season, asking how pitch selection, velocity, handedness, and batted-ball outcomes connect.`,
   );
 }
 
 function renderNarrative(data) {
   const h = data.headline;
-  const seasons = data.season_summary;
+  const months = data.month_summary;
   const mix = data.pitch_mix;
   const speed = data.speed_by_pitch;
   const hands = data.handedness;
@@ -89,14 +89,14 @@ function renderNarrative(data) {
   const topThreeShare = mix.slice(0, 3).reduce((sum, row) => sum + row.share, 0);
   const fastest = speed[0];
   const slowest = speed[speed.length - 1];
-  const firstSeason = seasons[0];
-  const lastSeason = seasons[seasons.length - 1];
+  const firstMonth = months[0];
+  const lastMonth = months[months.length - 1];
   const fieldOut = outcomes.find((row) => row.event === "field_out") || outcomes[0];
   const strikeout = outcomes.find((row) => row.event === "strikeout");
 
   setText(
     "scale-copy",
-    `The file contains ${formatNumber(h.pitches)} pitches from ${formatNumber(h.pitchers)} pitchers and ${formatNumber(h.batters)} batters. Each season contributes the same April 1–May 1 window, creating five comparable time periods while preserving the event-level detail needed to study individual matchups.`,
+    `The file contains ${formatNumber(h.pitches)} pitches from ${formatNumber(h.pitchers)} pitchers and ${formatNumber(h.batters)} batters. It uses five comparable monthly samples from the ${h.season} season while preserving the event-level detail needed to study individual matchups.`,
   );
   setText(
     "mix-copy",
@@ -110,7 +110,7 @@ function renderNarrative(data) {
   );
   setText(
     "season-copy",
-    `Average pitch speed moved from ${firstSeason.avg_speed.toFixed(2)} mph in ${firstSeason.season} to ${lastSeason.avg_speed.toFixed(2)} mph in ${lastSeason.season}, a ${(lastSeason.avg_speed - firstSeason.avg_speed).toFixed(2)}-mph increase. Over the same comparison, hard-hit rate moved from ${formatPercent(firstSeason.hard_hit_rate)} to ${formatPercent(lastSeason.hard_hit_rate)} among tracked batted balls.`,
+    `Average pitch speed moved from ${firstMonth.avg_speed.toFixed(2)} mph in ${firstMonth.month} to ${lastMonth.avg_speed.toFixed(2)} mph in ${lastMonth.month}, a ${(lastMonth.avg_speed - firstMonth.avg_speed).toFixed(2)}-mph change. Over the same comparison, hard-hit rate moved from ${formatPercent(firstMonth.hard_hit_rate)} to ${formatPercent(lastMonth.hard_hit_rate)} among tracked batted balls.`,
   );
   setText(
     "handedness-copy",
@@ -138,7 +138,7 @@ function renderNarrative(data) {
 function renderCharts(data) {
   const mix = data.pitch_mix;
   const speed = [...data.speed_by_pitch].reverse();
-  const seasons = data.season_summary;
+  const months = data.month_summary;
   const hands = data.handedness;
   const outcomes = data.outcomes.slice(0, 8).reverse();
   const pitchers = [...data.top_pitchers].reverse();
@@ -146,7 +146,7 @@ function renderCharts(data) {
 
   makeChart("season-volume-chart", {
     type: "bar",
-    data: { labels: seasons.map((row) => row.season), datasets: [{ label: "Pitches", data: seasons.map((row) => row.pitches), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
+    data: { labels: months.map((row) => row.month), datasets: [{ label: "Pitches", data: months.map((row) => row.pitches), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
     options: chartOptions(),
   });
 
@@ -164,9 +164,9 @@ function renderCharts(data) {
 
   makeChart("season-metrics-chart", {
     type: "line",
-    data: { labels: seasons.map((row) => row.season), datasets: [
-      { label: "Average pitch speed", data: seasons.map((row) => row.avg_speed), borderColor: REPORT_COLORS.blue, backgroundColor: REPORT_COLORS.blue, tension: 0.3, yAxisID: "y" },
-      { label: "Average exit velocity", data: seasons.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.orange, backgroundColor: REPORT_COLORS.orange, tension: 0.3, yAxisID: "y1" },
+    data: { labels: months.map((row) => row.month), datasets: [
+      { label: "Average pitch speed", data: months.map((row) => row.avg_speed), borderColor: REPORT_COLORS.blue, backgroundColor: REPORT_COLORS.blue, tension: 0.3, yAxisID: "y" },
+      { label: "Average exit velocity", data: months.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.orange, backgroundColor: REPORT_COLORS.orange, tension: 0.3, yAxisID: "y1" },
     ] },
     options: { ...chartOptions(), plugins: { legend: { display: true, labels: { usePointStyle: true, color: REPORT_COLORS.text } } }, scales: { x: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } }, y: { position: "left", grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.blue } }, y1: { position: "right", grid: { drawOnChartArea: false }, ticks: { color: REPORT_COLORS.orange } } } },
   });

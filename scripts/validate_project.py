@@ -6,7 +6,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data" / "mlb_statcast_2021_2025.csv"
+DATA = ROOT / "data" / "mlb_statcast_2025_months.csv"
 
 
 def main() -> None:
@@ -19,9 +19,11 @@ def main() -> None:
         "README.md",
         "submission.txt",
         "data/report_data.json",
+        "data/mlb_statcast_2025_months.csv",
         "data/player_names.json",
         "scripts/analyze_data.py",
         "scripts/create_player_names.py",
+        "scripts/get_statcast_2025_months.py",
         "scripts/make_small_dataset.py",
     ]
     missing = [path for path in required_files if not (ROOT / path).exists()]
@@ -30,7 +32,9 @@ def main() -> None:
     data = pd.read_csv(DATA, low_memory=False)
     assert len(data) >= 50_000, len(data)
     assert len(data.columns) >= 8, len(data.columns)
-    assert data["season"].nunique() >= 5, data["season"].nunique()
+    assert data["season"].nunique() == 1, data["season"].nunique()
+    assert data["season"].iloc[0] == 2025, data["season"].iloc[0]
+    assert data["month"].nunique() >= 5, data["month"].nunique()
     assert data["pitcher"].nunique() >= 10, data["pitcher"].nunique()
     assert data["batter"].nunique() >= 10, data["batter"].nunique()
 
@@ -52,7 +56,7 @@ def main() -> None:
 
     print("PASS: project files are present")
     print(f"PASS: {len(data):,} rows and {len(data.columns)} columns")
-    print(f"PASS: {data['season'].nunique()} seasons, {data['pitcher'].nunique():,} pitchers, {data['batter'].nunique():,} batters")
+    print(f"PASS: {data['month'].nunique()} months in the {int(data['season'].iloc[0])} season, {data['pitcher'].nunique():,} pitchers, {data['batter'].nunique():,} batters")
     print("PASS: report has at least eight charts")
     print("PASS: dashboard has filters, four charts, a table, and reset control")
 

@@ -10,7 +10,7 @@ from pybaseball import playerid_reverse_lookup
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2021_2025.csv"
+DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2025_months.csv"
 NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
 

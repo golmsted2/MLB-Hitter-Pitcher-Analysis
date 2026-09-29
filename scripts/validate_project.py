@@ -14,6 +14,8 @@ def main() -> None:
         "index.html",
         "dashboard.html",
         "styles.css",
+        "assets/baseball-pitch.jpg",
+        "assets/baseball-glove.jpg",
         "report.js",
         "dashboard.js",
         "README.md",

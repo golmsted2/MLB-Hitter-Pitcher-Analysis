@@ -10,7 +10,7 @@ const STRIKE_DESCRIPTIONS = new Set([
 ]);
 
 const HIT_EVENTS = new Set(["single", "double", "triple", "home_run"]);
-const REPORT_COLORS = ["#246b9c", "#e98a47", "#2a8b87", "#15283d", "#b9cbd7", "#8c6b9f", "#d8b24f", "#597d8f"];
+const REPORT_COLORS = ["#246b9c", "#d7473f", "#7fa8c9", "#a52f32", "#d9e8f3", "#eeaaa6", "#173d5b", "#e36f68"];
 const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
@@ -224,7 +224,7 @@ function updateOutcomes(rows) {
   const groups = [...counts.entries()].map(([event, count]) => ({ event, count })).sort((a, b) => b.count - a.count).slice(0, 10).reverse();
   replaceChart("outcomes", "outcomes-chart", {
     type: "bar",
-    data: { labels: groups.map((group) => group.event.replaceAll("_", " ")), datasets: [{ label: "Appearances", data: groups.map((group) => group.count), backgroundColor: "#2a8b87", borderRadius: 5 }] },
+    data: { labels: groups.map((group) => group.event.replaceAll("_", " ")), datasets: [{ label: "Appearances", data: groups.map((group) => group.count), backgroundColor: "#246b9c", borderRadius: 5 }] },
     options: { ...chartOptions(true), plugins: { legend: { display: false }, tooltip: { backgroundColor: "#15283d", padding: 12, displayColors: false, callbacks: { label: (context) => `${formatNumber(context.raw)} appearances` } } } },
   });
 }

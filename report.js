@@ -1,9 +1,9 @@
 const REPORT_COLORS = {
   navy: "#15283d",
   blue: "#246b9c",
-  orange: "#e98a47",
-  teal: "#2a8b87",
-  pale: "#b9cbd7",
+  red: "#d7473f",
+  pale: "#b9cde0",
+  redPale: "#f2b4b0",
   grid: "#e5e9e7",
   text: "#667085",
 };
@@ -152,13 +152,13 @@ function renderCharts(data) {
 
   makeChart("pitch-mix-chart", {
     type: "bar",
-    data: { labels: mix.map((row) => row.pitch_name), datasets: [{ label: "Share of pitches", data: mix.map((row) => row.share), backgroundColor: REPORT_COLORS.orange, borderRadius: 5 }] },
+    data: { labels: mix.map((row) => row.pitch_name), datasets: [{ label: "Share of pitches", data: mix.map((row) => row.share), backgroundColor: REPORT_COLORS.red, borderRadius: 5 }] },
     options: { ...chartOptions({ horizontal: true, percentage: true }), scales: { x: { beginAtZero: true, max: 36, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value}%` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text, font: { family: "DM Mono" } } } } },
   });
 
   makeChart("pitch-speed-chart", {
     type: "bar",
-    data: { labels: speed.map((row) => row.pitch_name), datasets: [{ label: "Average speed", data: speed.map((row) => row.avg_speed), backgroundColor: REPORT_COLORS.teal, borderRadius: 5 }] },
+    data: { labels: speed.map((row) => row.pitch_name), datasets: [{ label: "Average speed", data: speed.map((row) => row.avg_speed), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
     options: { ...chartOptions({ horizontal: true }), scales: { x: { beginAtZero: true, suggestedMax: 100, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value} mph` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } } } },
   });
 
@@ -166,15 +166,15 @@ function renderCharts(data) {
     type: "line",
     data: { labels: months.map((row) => row.month), datasets: [
       { label: "Average pitch speed", data: months.map((row) => row.avg_speed), borderColor: REPORT_COLORS.blue, backgroundColor: REPORT_COLORS.blue, tension: 0.3, yAxisID: "y" },
-      { label: "Average exit velocity", data: months.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.orange, backgroundColor: REPORT_COLORS.orange, tension: 0.3, yAxisID: "y1" },
+      { label: "Average exit velocity", data: months.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.red, backgroundColor: REPORT_COLORS.red, tension: 0.3, yAxisID: "y1" },
     ] },
-    options: { ...chartOptions(), plugins: { legend: { display: true, labels: { usePointStyle: true, color: REPORT_COLORS.text } } }, scales: { x: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } }, y: { position: "left", grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.blue } }, y1: { position: "right", grid: { drawOnChartArea: false }, ticks: { color: REPORT_COLORS.orange } } } },
+    options: { ...chartOptions(), plugins: { legend: { display: true, labels: { usePointStyle: true, color: REPORT_COLORS.text } } }, scales: { x: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } }, y: { position: "left", grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.blue } }, y1: { position: "right", grid: { drawOnChartArea: false }, ticks: { color: REPORT_COLORS.red } } } },
   });
 
   const handLabels = hands.map((row) => `P${row.p_throws} / B${row.stand}`);
   makeChart("handedness-chart", {
     type: "bar",
-    data: { labels: handLabels, datasets: [{ label: "Pitches", data: hands.map((row) => row.pitches), backgroundColor: [REPORT_COLORS.pale, REPORT_COLORS.orange, REPORT_COLORS.blue, REPORT_COLORS.navy], borderRadius: 5 }] },
+    data: { labels: handLabels, datasets: [{ label: "Pitches", data: hands.map((row) => row.pitches), backgroundColor: [REPORT_COLORS.pale, REPORT_COLORS.redPale, REPORT_COLORS.blue, REPORT_COLORS.red], borderRadius: 5 }] },
     options: chartOptions(),
   });
 
@@ -192,7 +192,7 @@ function renderCharts(data) {
 
   makeChart("top-batters-chart", {
     type: "bar",
-    data: { labels: batters.map((row) => row.player_name || `MLB ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: REPORT_COLORS.orange, borderRadius: 5 }] },
+    data: { labels: batters.map((row) => row.player_name || `MLB ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: REPORT_COLORS.red, borderRadius: 5 }] },
     options: { ...chartOptions({ horizontal: true, percentage: true }), scales: { x: { beginAtZero: true, max: 35, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value}%` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } } } },
   });
 }

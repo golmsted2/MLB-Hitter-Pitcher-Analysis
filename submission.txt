@@ -1,4 +1,4 @@
-Your Name
-Your Student ID
-https://github.com/YOUR-USERNAME/mlb-statcast-project
-https://YOUR-USERNAME.github.io/mlb-statcast-project/
+Gehrig Olmsted
+011036827
+https://github.com/golmsted2/MLB-Hitter-Pitcher-Analysis/edit/main/submission.txt
+https://golmsted2.github.io/MLB-Hitter-Pitcher-Analysis/index.html

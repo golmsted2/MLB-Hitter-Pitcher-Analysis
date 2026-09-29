@@ -83,6 +83,8 @@ function renderNarrative(data) {
   const outcomes = data.outcomes;
   const topPitcher = data.top_pitchers[0];
   const topBatter = data.top_batters[0];
+  const topPitcherName = topPitcher.player_name || `MLB ID ${topPitcher.pitcher}`;
+  const topBatterName = topBatter.player_name || `MLB ID ${topBatter.batter}`;
   const largestHandGroup = [...hands].sort((a, b) => b.pitches - a.pitches)[0];
   const topThreeShare = mix.slice(0, 3).reduce((sum, row) => sum + row.share, 0);
   const fastest = speed[0];
@@ -120,11 +122,11 @@ function renderNarrative(data) {
   );
   setText(
     "pitchers-copy",
-    `The busiest pitcher ID in this sample threw ${formatNumber(topPitcher.pitches)} pitches, or ${(topPitcher.pitches / h.pitches * 100).toFixed(1)}% of all rows. The top ten pitchers are useful for volume comparisons, but pitch count is exposure—not a direct measure of pitching quality.`,
+    `${topPitcherName} threw the most pitches in this sample: ${formatNumber(topPitcher.pitches)}, or ${(topPitcher.pitches / h.pitches * 100).toFixed(1)}% of all rows. The top ten pitchers are useful for volume comparisons, but pitch count is exposure—not a direct measure of pitching quality.`,
   );
   setText(
     "batters-copy",
-    `Among batters with at least 100 completed plate appearances, the highest observed hit rate belongs to batter ID ${topBatter.batter}: ${formatPercent(topBatter.hit_rate)} over ${formatNumber(topBatter.plate_appearances)} appearances. That threshold reduces—but does not eliminate—the small-sample problem, so the dashboard should be used to inspect the denominator before drawing conclusions.`,
+    `Among batters with at least 100 completed plate appearances, the highest observed hit rate belongs to ${topBatterName}: ${formatPercent(topBatter.hit_rate)} over ${formatNumber(topBatter.plate_appearances)} appearances. That threshold reduces—but does not eliminate—the small-sample problem, so the dashboard should be used to inspect the denominator before drawing conclusions.`,
   );
 
   setText(
@@ -184,13 +186,13 @@ function renderCharts(data) {
 
   makeChart("top-pitchers-chart", {
     type: "bar",
-    data: { labels: pitchers.map((row) => `ID ${row.pitcher}`), datasets: [{ label: "Pitches", data: pitchers.map((row) => row.pitches), backgroundColor: REPORT_COLORS.navy, borderRadius: 5 }] },
+    data: { labels: pitchers.map((row) => row.player_name || `MLB ID ${row.pitcher}`), datasets: [{ label: "Pitches", data: pitchers.map((row) => row.pitches), backgroundColor: REPORT_COLORS.navy, borderRadius: 5 }] },
     options: chartOptions({ horizontal: true }),
   });
 
   makeChart("top-batters-chart", {
     type: "bar",
-    data: { labels: batters.map((row) => `ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: REPORT_COLORS.orange, borderRadius: 5 }] },
+    data: { labels: batters.map((row) => row.player_name || `MLB ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: REPORT_COLORS.orange, borderRadius: 5 }] },
     options: { ...chartOptions({ horizontal: true, percentage: true }), scales: { x: { beginAtZero: true, max: 35, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value}%` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } } } },
   });
 }

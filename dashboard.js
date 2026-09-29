@@ -14,6 +14,7 @@ const REPORT_COLORS = ["#246b9c", "#e98a47", "#2a8b87", "#15283d", "#b9cbd7", "#
 const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
+const playerNames = new Map();
 
 const filterKeys = [
   ["filter-season", "season"],
@@ -93,7 +94,7 @@ function displayValue(key, value) {
   if (key === "pitch_type") return pitchNameByType.get(String(value)) ? `${value} — ${pitchNameByType.get(String(value))}` : value;
   if (key === "p_throws") return `${value === "R" ? "Right" : "Left"} (${value})`;
   if (key === "stand") return `${value === "R" ? "Right" : "Left"} (${value})`;
-  if (key === "pitcher" || key === "batter") return `MLB ID ${value}`;
+  if (key === "pitcher" || key === "batter") return playerNames.get(String(value)) || `MLB ID ${value}`;
   return value;
 }
 
@@ -265,7 +266,17 @@ function prepareFilters() {
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
 }
 
-function loadDashboardData() {
+async function loadDashboardData() {
+  try {
+    const namesResponse = await fetch("data/player_names.json");
+    if (namesResponse.ok) {
+      const names = await namesResponse.json();
+      Object.entries(names).forEach(([playerId, name]) => playerNames.set(playerId, name));
+    }
+  } catch (error) {
+    console.warn("Player names could not be loaded; MLB IDs will be shown.", error);
+  }
+
   Papa.parse("data/mlb_statcast_2021_2025.csv", {
     download: true,
     header: true,

@@ -14,7 +14,9 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 
 - `data/mlb_statcast_2021_2025.csv` is the project data: one regular-season pitch per row from April 1 through May 1 in each season from 2021 through 2025. It is a deterministic sample of 30,000 pitches per season, or 150,000 rows total, so the published data file stays below 25 MB.
 - `data/report_data.json` contains the summary tables used by the report page. It is generated from the CSV, not typed by hand.
+- `data/player_names.json` maps the MLB player IDs in the CSV to player names for the report charts, report narrative, and dashboard filters.
 - `scripts/analyze_data.py` reads the CSV, computes the report findings, and writes `data/report_data.json`.
+- `scripts/create_player_names.py` uses the `pybaseball` player-ID lookup to create the compact player-name file.
 - `scripts/make_small_dataset.py` creates the deterministic 30,000-rows-per-season file from a full Statcast export.
 - `scripts/validate_project.py` checks the dataset and site structure against the assignment requirements.
 - `submission.txt` is the four-line submission template required by the assignment. Replace the placeholders before turning it in.

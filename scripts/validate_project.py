@@ -19,7 +19,9 @@ def main() -> None:
         "README.md",
         "submission.txt",
         "data/report_data.json",
+        "data/player_names.json",
         "scripts/analyze_data.py",
+        "scripts/create_player_names.py",
         "scripts/make_small_dataset.py",
     ]
     missing = [path for path in required_files if not (ROOT / path).exists()]
@@ -44,6 +46,9 @@ def main() -> None:
     assert dashboard.count('id="filter-') >= 4
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard
+
+    summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
+    assert '"player_name"' in summary_text
 
     print("PASS: project files are present")
     print(f"PASS: {len(data):,} rows and {len(data.columns)} columns")

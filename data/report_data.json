@@ -232,52 +232,62 @@
     {
       "pitcher": 543135,
       "pitches": 719,
-      "avg_speed": 89.27
+      "avg_speed": 89.27,
+      "player_name": "Nathan Eovaldi"
     },
     {
       "pitcher": 554430,
       "pitches": 661,
-      "avg_speed": 92.0
+      "avg_speed": 92.0,
+      "player_name": "Zack Wheeler"
     },
     {
       "pitcher": 669203,
       "pitches": 659,
-      "avg_speed": 90.97
+      "avg_speed": 90.97,
+      "player_name": "Corbin Burnes"
     },
     {
       "pitcher": 450203,
       "pitches": 643,
-      "avg_speed": 88.16
+      "avg_speed": 88.16,
+      "player_name": "Charlie Morton"
     },
     {
       "pitcher": 605135,
       "pitches": 634,
-      "avg_speed": 86.32
+      "avg_speed": 86.32,
+      "player_name": "Chris Bassitt"
     },
     {
       "pitcher": 657277,
       "pitches": 634,
-      "avg_speed": 88.21
+      "avg_speed": 88.21,
+      "player_name": "Logan Webb"
     },
     {
       "pitcher": 656605,
       "pitches": 630,
-      "avg_speed": 89.49
+      "avg_speed": 89.49,
+      "player_name": "Mitch Keller"
     },
     {
       "pitcher": 592332,
       "pitches": 620,
-      "avg_speed": 89.46
+      "avg_speed": 89.46,
+      "player_name": "Kevin Gausman"
     },
     {
       "pitcher": 605400,
       "pitches": 609,
-      "avg_speed": 86.51
+      "avg_speed": 86.51,
+      "player_name": "Aaron Nola"
     },
     {
       "pitcher": 621244,
       "pitches": 607,
-      "avg_speed": 89.04
+      "avg_speed": 89.04,
+      "player_name": "Jos\u00e9 Berr\u00edos"
     }
   ],
   "top_batters": [
@@ -285,61 +295,71 @@
       "batter": 680757,
       "plate_appearances": 111,
       "hit_rate": 0.35,
-      "home_runs": 1
+      "home_runs": 1,
+      "player_name": "Steven Kwan"
     },
     {
       "batter": 650333,
       "plate_appearances": 130,
       "hit_rate": 0.33,
-      "home_runs": 2
+      "home_runs": 2,
+      "player_name": "Luis Arr\u00e1ez"
     },
     {
       "batter": 657077,
       "plate_appearances": 118,
       "hit_rate": 0.31,
-      "home_runs": 3
+      "home_runs": 3,
+      "player_name": "Alex Verdugo"
     },
     {
       "batter": 545361,
       "plate_appearances": 129,
       "hit_rate": 0.3,
-      "home_runs": 14
+      "home_runs": 14,
+      "player_name": "Mike Trout"
     },
     {
       "batter": 621043,
       "plate_appearances": 110,
       "hit_rate": 0.29,
-      "home_runs": 2
+      "home_runs": 2,
+      "player_name": "Carlos Correa"
     },
     {
       "batter": 570482,
       "plate_appearances": 101,
       "hit_rate": 0.29,
-      "home_runs": 1
+      "home_runs": 1,
+      "player_name": "Gio Urshela"
     },
     {
       "batter": 643217,
       "plate_appearances": 121,
       "hit_rate": 0.28,
-      "home_runs": 6
+      "home_runs": 6,
+      "player_name": "Andrew Benintendi"
     },
     {
       "batter": 641355,
       "plate_appearances": 122,
       "hit_rate": 0.28,
-      "home_runs": 4
+      "home_runs": 4,
+      "player_name": "Cody Bellinger"
     },
     {
       "batter": 664702,
       "plate_appearances": 112,
       "hit_rate": 0.28,
-      "home_runs": 0
+      "home_runs": 0,
+      "player_name": "Myles Straw"
     },
     {
       "batter": 502671,
       "plate_appearances": 139,
       "hit_rate": 0.27,
-      "home_runs": 2
+      "home_runs": 2,
+      "player_name": "Paul Goldschmidt"
     }
   ],
   "outcomes": [

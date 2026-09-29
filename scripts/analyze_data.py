@@ -11,6 +11,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2021_2025.csv"
 SUMMARY_PATH = PROJECT_ROOT / "data" / "report_data.json"
+NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
 HITS = {"single", "double", "triple", "home_run"}
 STRIKEOUTS = {"strikeout", "strikeout_double_play"}
@@ -45,6 +46,12 @@ def round_records(frame: pd.DataFrame, digits: int = 2) -> list[dict]:
     numeric = result.select_dtypes(include="number").columns
     result[numeric] = result[numeric].round(digits)
     return result.where(pd.notna(result), None).to_dict(orient="records")
+
+
+def load_player_names() -> dict[str, str]:
+    if not NAMES_PATH.exists():
+        return {}
+    return json.loads(NAMES_PATH.read_text(encoding="utf-8"))
 
 
 def main() -> None:
@@ -122,6 +129,14 @@ def main() -> None:
         .reset_index()
         .sort_values("hit_rate", ascending=False)
         .head(10)
+    )
+
+    player_names = load_player_names()
+    top_pitchers["player_name"] = top_pitchers["pitcher"].map(
+        lambda player_id: player_names.get(str(int(player_id)), f"MLB ID {int(player_id)}")
+    )
+    top_batters["player_name"] = top_batters["batter"].map(
+        lambda player_id: player_names.get(str(int(player_id)), f"MLB ID {int(player_id)}")
     )
 
     exit_velocity_bands = pd.cut(

@@ -122,6 +122,36 @@ function addOptions(selectId, key, firstLabel) {
   select.appendChild(fragment);
 }
 
+function closePlayerModal() {
+  const modal = document.getElementById("player-modal");
+  modal.hidden = true;
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function showPlayerModal(key, value) {
+  if (!value) return;
+  const modal = document.getElementById("player-modal");
+  const image = document.getElementById("player-modal-image");
+  const placeholder = document.getElementById("player-modal-placeholder");
+  const name = playerNames.get(String(value)) || `MLB ID ${value}`;
+  const role = key === "pitcher" ? "Selected pitcher" : "Selected batter";
+
+  document.getElementById("player-modal-role").textContent = role;
+  document.getElementById("player-modal-name").textContent = name;
+  document.getElementById("player-modal-id").textContent = `MLB ID ${value}`;
+  image.alt = `${name} headshot`;
+  image.hidden = false;
+  placeholder.hidden = true;
+  image.onerror = () => {
+    image.hidden = true;
+    placeholder.hidden = false;
+  };
+  image.src = `https://img.mlbstatic.com/mlb-photos/image/upload/w_320,q_auto:good/v1/people/${value}/headshot/67/current.png`;
+  modal.hidden = false;
+  modal.setAttribute("aria-hidden", "false");
+  document.getElementById("close-player-modal").focus();
+}
+
 function currentFilters() {
   return Object.fromEntries(filterKeys.map(([id, key]) => [key, document.getElementById(id).value]));
 }
@@ -271,6 +301,13 @@ function prepareFilters() {
   addOptions("filter-batter", "batter", "All batters");
   [...document.querySelectorAll("select")].forEach((select) => select.addEventListener("change", updateDashboard));
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
+  document.getElementById("filter-pitcher").addEventListener("change", (event) => showPlayerModal("pitcher", event.target.value));
+  document.getElementById("filter-batter").addEventListener("change", (event) => showPlayerModal("batter", event.target.value));
+  document.getElementById("close-player-modal").addEventListener("click", closePlayerModal);
+  document.querySelector("[data-close-player-modal]").addEventListener("click", closePlayerModal);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closePlayerModal();
+  });
 }
 
 async function loadDashboardData() {

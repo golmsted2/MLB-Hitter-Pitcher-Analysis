@@ -58,6 +58,8 @@ def main() -> None:
     assert dashboard.count('id="filter-') >= 4
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard
+    assert 'id="player-modal"' in dashboard
+    assert 'id="player-modal-image"' in dashboard
 
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
     assert '"player_name"' in summary_text

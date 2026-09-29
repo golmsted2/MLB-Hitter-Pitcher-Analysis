@@ -55,6 +55,28 @@ function makeChart(id, config) {
   return new Chart(canvas, config);
 }
 
+function themeColor(name, fallback) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function updateReportChartTheme() {
+  const text = themeColor("--chart-text", REPORT_COLORS.text);
+  const grid = themeColor("--chart-grid", REPORT_COLORS.grid);
+  const tooltip = themeColor("--chart-tooltip", REPORT_COLORS.navy);
+  Object.values(reportCharts).forEach((chart) => {
+    if (!chart) return;
+    Object.values(chart.options.scales || {}).forEach((scale) => {
+      if (scale.ticks) scale.ticks.color = text;
+      if (scale.grid) scale.grid.color = grid;
+    });
+    if (chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = text;
+    if (chart.options.plugins?.tooltip) chart.options.plugins.tooltip.backgroundColor = tooltip;
+    chart.update("none");
+  });
+}
+
+window.addEventListener("themechange", updateReportChartTheme);
+
 function setText(id, text) {
   const element = document.getElementById(id);
   if (element) element.textContent = text;
@@ -304,6 +326,7 @@ async function loadReport() {
     renderHeadline(data);
     renderNarrative(data);
     renderCharts(data);
+    updateReportChartTheme();
     renderExplorer(data);
     setupFindingNavigation();
   } catch (error) {

@@ -14,6 +14,7 @@ def main() -> None:
         "index.html",
         "dashboard.html",
         "styles.css",
+        "theme.js",
         "assets/baseball-pitch.jpg",
         "assets/baseball-glove.jpg",
         "report.js",
@@ -57,6 +58,10 @@ def main() -> None:
     assert 'id="report-explorer"' in report
     assert 'id="month-focus-select"' in report
     assert report.count('data-report-jump=') >= 8
+    assert 'id="theme-toggle"' in report
+    assert 'id="theme-toggle"' in dashboard
+    assert 'src="theme.js"' in report
+    assert 'src="theme.js"' in dashboard
     assert dashboard.count("<canvas") >= 4
     assert 'assets/baseball-favicon.svg' in report
     assert 'assets/baseball-favicon.svg' in dashboard

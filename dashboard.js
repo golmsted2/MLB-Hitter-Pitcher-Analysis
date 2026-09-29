@@ -55,6 +55,28 @@ function formatNumber(value) {
   return Number.isFinite(value) ? new Intl.NumberFormat("en-US").format(Math.round(value)) : "—";
 }
 
+function themeColor(name, fallback) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function updateChartTheme() {
+  const text = themeColor("--chart-text", "#667085");
+  const grid = themeColor("--chart-grid", "#e5e9e7");
+  const tooltip = themeColor("--chart-tooltip", "#15283d");
+  Object.values(charts).forEach((chart) => {
+    if (!chart) return;
+    Object.values(chart.options.scales || {}).forEach((scale) => {
+      if (scale.ticks) scale.ticks.color = text;
+      if (scale.grid) scale.grid.color = grid;
+    });
+    if (chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = text;
+    if (chart.options.plugins?.tooltip) chart.options.plugins.tooltip.backgroundColor = tooltip;
+    chart.update("none");
+  });
+}
+
+window.addEventListener("themechange", updateChartTheme);
+
 function isFiniteNumber(value) {
   return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
 }
@@ -287,6 +309,7 @@ function updateDashboard() {
   updateTrend(rows, metric);
   updateMix(rows);
   updateOutcomes(rows);
+  updateChartTheme();
 }
 
 function resetFilters() {

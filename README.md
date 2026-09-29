@@ -7,6 +7,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 - `index.html` is the scrollable report page. It presents eight findings, headline numbers, charts, an interactive month-highlighting explorer, jump links, and the data/method notes.
 - `dashboard.html` is the interactive dashboard. It loads the CSV in the browser and recalculates cards, charts, and the table when filters or switches change.
 - `styles.css` contains the shared layout, colors, typography, responsive behavior, and dashboard styles.
+- `theme.js` controls the shared light/dark mode switch and remembers the selected theme in the browser.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.
 - `assets/baseball-pitch.jpg` and `assets/baseball-glove.jpg` are the local baseball photographs used in the report and dashboard artwork. They were downloaded from Unsplash so the published site does not depend on remote image loading.
 - `report.js` loads `data/report_data.json`, fills the report prose, and creates the eight report charts.

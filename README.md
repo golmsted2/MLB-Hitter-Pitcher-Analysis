@@ -9,7 +9,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 - `styles.css` contains the shared layout, colors, typography, responsive behavior, and dashboard styles.
 - `theme.js` controls the shared light/dark mode switch and remembers the selected theme in the browser.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.
-- `assets/baseball-pitch.jpg` and `assets/baseball-glove.jpg` are the local baseball photographs used in the report and dashboard artwork. They were downloaded from Unsplash so the published site does not depend on remote image loading.
+- `assets/mlb-pitcher-paul-skenes.png` and `assets/mlb-hitter-aaron-judge.png` are official MLB player headshots used in the report and dashboard artwork. They are stored locally so the published site does not depend on remote image loading.
 - `report.js` loads `data/report_data.json`, fills the report prose, and creates the eight report charts.
 - `dashboard.js` loads the five full monthly pitch-level CSV files with Papa Parse and performs the dashboard calculations in the browser.
 
@@ -30,7 +30,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 
 The raw data comes from MLB Advanced Media’s public Baseball Savant Statcast search export. Baseball Savant’s [CSV documentation](https://baseballsavant.mlb.com/csv-docs) defines the fields used here, including `game_date`, `pitch_type`, `pitcher`, `batter`, `events`, `description`, `stand`, `p_throws`, `release_speed`, `launch_speed`, and `launch_angle`.
 
-The decorative photographs come from Unsplash: [pitcher and batter photo](https://unsplash.com/photos/man-in-black-and-white-jersey-shirt-and-white-pants-playing-baseball-during-daytime-ZhEHD1Ubej0) and [glove and ball photo](https://unsplash.com/ja/%E5%86%99%E7%9C%9F/%E9%87%8E%E7%90%83%E3%83%9C%E3%83%BC%E3%83%AB%E3%81%8C%E5%85%A5%E3%81%A3%E3%81%9F%E9%87%8E%E7%9C%9F-4dDVbDnmzoo).
+The player headshots come from MLB’s official image CDN and identify Paul Skenes and Aaron Judge, both of whom appear in the published player-name file.
 
 The published data meets the project requirements: it has 582,404 rows, 20 columns, five months within the 2025 season, and more than ten pitchers and batters. The event-level structure allows a pitch to belong to both a pitcher and a batter. Missing `events` and launch measurements are retained because they are natural features of pitch-level data; each rate uses the appropriate non-missing denominator.
 

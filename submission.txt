@@ -1,0 +1,4 @@
+Your Name
+Your Student ID
+https://github.com/YOUR-USERNAME/mlb-statcast-project
+https://YOUR-USERNAME.github.io/mlb-statcast-project/

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard | Between the Lines</title>
+    <meta name="description" content="Filter and explore MLB Statcast pitch-level data in the browser." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Between the Lines home">
+        <span class="brand-mark">B/T</span>
+        <span>Between the Lines</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Report</a>
+        <a class="active" href="dashboard.html">Dashboard <span class="nav-arrow">↗</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="dashboard-hero">
+        <p class="eyebrow">Interactive explorer</p>
+        <h1>Find your matchup.</h1>
+        <p>
+          Filter the five-season sample, change the measure, and see the comparison update in your
+          browser. Every number below is calculated from the pitch-level CSV loaded on this page.
+        </p>
+        <div class="loading-status" id="loading-status" role="status">Loading Statcast data…</div>
+      </section>
+
+      <section class="control-panel" aria-label="Dashboard controls">
+        <div class="control-heading">
+          <div>
+            <p class="section-kicker">Controls</p>
+            <h2>Shape the question</h2>
+          </div>
+          <button class="button button-ghost" id="reset-filters" type="button">Reset all filters</button>
+        </div>
+        <div class="filter-grid">
+          <label class="control-field">Season
+            <select id="filter-season"><option value="">All seasons</option></select>
+          </label>
+          <label class="control-field">Month
+            <select id="filter-month"><option value="">All months</option></select>
+          </label>
+          <label class="control-field">Pitch type
+            <select id="filter-pitch-type"><option value="">All pitch types</option></select>
+          </label>
+          <label class="control-field">Pitcher hand
+            <select id="filter-p-throws"><option value="">All pitcher hands</option></select>
+          </label>
+          <label class="control-field">Batter stance
+            <select id="filter-stand"><option value="">All batter stances</option></select>
+          </label>
+          <label class="control-field">Pitcher ID
+            <select id="filter-pitcher"><option value="">All pitchers</option></select>
+          </label>
+          <label class="control-field">Batter ID
+            <select id="filter-batter"><option value="">All batters</option></select>
+          </label>
+        </div>
+        <div class="switch-row">
+          <label class="control-field switch-field">Measure shown
+            <select id="metric-select">
+              <option value="count">Pitch count</option>
+              <option value="avg_speed">Average pitch speed</option>
+              <option value="avg_exit_velocity">Average exit velocity</option>
+              <option value="strike_rate">Strike rate</option>
+              <option value="hard_hit_rate">Hard-hit rate</option>
+            </select>
+          </label>
+          <label class="control-field switch-field">Break charts down by
+            <select id="breakdown-select">
+              <option value="season">Season</option>
+              <option value="month">Month</option>
+              <option value="pitch_type">Pitch type</option>
+              <option value="p_throws">Pitcher hand</option>
+              <option value="stand">Batter stance</option>
+              <option value="home_team">Home team</option>
+              <option value="away_team">Away team</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="dashboard-content" aria-live="polite">
+        <div class="stat-grid" id="dashboard-stats">
+          <div class="stat-card"><span class="card-label">Visible pitches</span><strong id="stat-pitches">—</strong></div>
+          <div class="stat-card"><span class="card-label">Pitchers</span><strong id="stat-pitchers">—</strong></div>
+          <div class="stat-card"><span class="card-label">Batters</span><strong id="stat-batters">—</strong></div>
+          <div class="stat-card"><span class="card-label">Average speed</span><strong id="stat-speed">—</strong></div>
+          <div class="stat-card"><span class="card-label">Average exit velocity</span><strong id="stat-exit">—</strong></div>
+          <div class="stat-card"><span class="card-label">Hard-hit rate</span><strong id="stat-hard-hit">—</strong></div>
+        </div>
+
+        <div class="dashboard-chart-grid">
+          <section class="dashboard-card chart-card wide-card">
+            <div class="chart-card-heading"><div><p class="section-kicker">Comparison</p><h2 id="comparison-title">Pitch count by season</h2></div><span class="live-dot">Live</span></div>
+            <div class="dashboard-chart-wrap"><canvas id="comparison-chart" aria-label="Selected metric by selected breakdown"></canvas></div>
+          </section>
+          <section class="dashboard-card chart-card">
+            <div class="chart-card-heading"><div><p class="section-kicker">Trend</p><h2>Season trend</h2></div></div>
+            <div class="dashboard-chart-wrap"><canvas id="trend-chart" aria-label="Season trend"></canvas></div>
+          </section>
+          <section class="dashboard-card chart-card">
+            <div class="chart-card-heading"><div><p class="section-kicker">Pitch mix</p><h2>Types in view</h2></div></div>
+            <div class="dashboard-chart-wrap"><canvas id="mix-chart" aria-label="Pitch types in current view"></canvas></div>
+          </section>
+          <section class="dashboard-card chart-card wide-card">
+            <div class="chart-card-heading"><div><p class="section-kicker">Plate appearances</p><h2>Recorded outcomes</h2></div></div>
+            <div class="dashboard-chart-wrap"><canvas id="outcomes-chart" aria-label="Recorded outcomes in current view"></canvas></div>
+          </section>
+        </div>
+
+        <section class="dashboard-card table-card">
+          <div class="chart-card-heading">
+            <div><p class="section-kicker">Numbers behind the view</p><h2 id="table-title">Summary by season</h2></div>
+            <span class="table-note" id="table-note">—</span>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Breakdown</th><th>Pitches</th><th>Avg speed</th><th>Avg exit velocity</th><th>Strike rate</th><th>Hard-hit rate</th><th>Plate appearances</th></tr></thead>
+              <tbody id="summary-table"><tr><td colspan="7">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Between the Lines · MLB Statcast project</span>
+      <a href="index.html">Back to the report ↗</a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

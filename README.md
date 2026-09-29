@@ -4,7 +4,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 
 ## Site pages
 
-- `index.html` is the scrollable report page. It presents eight findings, headline numbers, charts, and the data/method notes.
+- `index.html` is the scrollable report page. It presents eight findings, headline numbers, charts, an interactive month-highlighting explorer, jump links, and the data/method notes.
 - `dashboard.html` is the interactive dashboard. It loads the CSV in the browser and recalculates cards, charts, and the table when filters or switches change.
 - `styles.css` contains the shared layout, colors, typography, responsive behavior, and dashboard styles.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.

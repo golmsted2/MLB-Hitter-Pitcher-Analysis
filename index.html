@@ -60,6 +60,43 @@
         <div class="headline-card accent-card"><span class="card-label">Hard-hit rate</span><strong data-headline="hard_hit_rate">—</strong><span class="card-note">95+ mph balls in play</span></div>
       </section>
 
+      <section class="report-explorer" id="report-explorer" aria-labelledby="explorer-title">
+        <div class="explorer-top">
+          <div class="explorer-copy">
+            <p class="section-kicker">Interactive report lens</p>
+            <h2 id="explorer-title">Zoom in on one month.</h2>
+            <p id="explorer-summary">Choose a month to highlight it in the monthly charts and update the snapshot below.</p>
+          </div>
+          <div class="explorer-controls">
+            <label class="explorer-label" for="month-focus-select">Focus month
+              <select id="month-focus-select">
+                <option value="">Loading months…</option>
+              </select>
+            </label>
+            <button class="button button-ghost" id="clear-month-focus" type="button">Show all months</button>
+          </div>
+        </div>
+        <div class="explorer-stat-grid" aria-live="polite">
+          <div class="explorer-stat"><span class="card-label">Pitches in view</span><strong data-explorer-stat="pitches">—</strong></div>
+          <div class="explorer-stat"><span class="card-label">Average pitch speed</span><strong data-explorer-stat="avg_speed">—</strong></div>
+          <div class="explorer-stat"><span class="card-label">Average exit velocity</span><strong data-explorer-stat="avg_exit_velocity">—</strong></div>
+          <div class="explorer-stat"><span class="card-label">Hard-hit rate</span><strong data-explorer-stat="hard_hit_rate">—</strong></div>
+        </div>
+        <div class="finding-nav" aria-label="Jump to a report finding">
+          <span class="finding-nav-label">Jump to finding</span>
+          <div class="finding-links">
+            <a class="finding-link active" href="#section-scale" data-report-jump="section-scale"><span>01</span> Scale</a>
+            <a class="finding-link" href="#section-mix" data-report-jump="section-mix"><span>02</span> Pitch mix</a>
+            <a class="finding-link" href="#section-speed" data-report-jump="section-speed"><span>03</span> Speed</a>
+            <a class="finding-link" href="#section-season" data-report-jump="section-season"><span>04</span> Monthly shift</a>
+            <a class="finding-link" href="#section-handedness" data-report-jump="section-handedness"><span>05</span> Handedness</a>
+            <a class="finding-link" href="#section-outcomes" data-report-jump="section-outcomes"><span>06</span> Outcomes</a>
+            <a class="finding-link" href="#section-pitchers" data-report-jump="section-pitchers"><span>07</span> Pitchers</a>
+            <a class="finding-link" href="#section-batters" data-report-jump="section-batters"><span>08</span> Batters</a>
+          </div>
+        </div>
+      </section>
+
       <div class="report-intro">
         <p class="section-kicker">The short version</p>
         <p>
@@ -207,6 +244,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="report.js?v=4"></script>
+    <script src="report.js?v=5"></script>
   </body>
 </html>

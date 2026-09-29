@@ -54,6 +54,9 @@ def main() -> None:
     report = (ROOT / "index.html").read_text(encoding="utf-8")
     dashboard = (ROOT / "dashboard.html").read_text(encoding="utf-8")
     assert report.count("<canvas") >= 8
+    assert 'id="report-explorer"' in report
+    assert 'id="month-focus-select"' in report
+    assert report.count('data-report-jump=') >= 8
     assert dashboard.count("<canvas") >= 4
     assert 'assets/baseball-favicon.svg' in report
     assert 'assets/baseball-favicon.svg' in dashboard

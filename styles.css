@@ -85,6 +85,26 @@ h3 { color: var(--navy); font-size: 1rem; letter-spacing: -0.02em; line-height: 
 
 .report-intro { background: linear-gradient(90deg, rgba(215,71,63,0.08), transparent); border-left: 3px solid var(--orange); border-radius: 0 16px 16px 0; margin: 84px 0 35px; max-width: 800px; padding: 18px 24px 18px 25px; }
 .report-intro p:last-child { color: #536071; font-size: 1.03rem; line-height: 1.8; margin-bottom: 0; }
+.report-explorer { background: linear-gradient(135deg, #eef5fa, #fff7f5); border: 1px solid rgba(36,107,156,0.2); border-radius: 24px; box-shadow: var(--shadow); margin: 42px 0 35px; padding: clamp(24px, 4vw, 38px); }
+.explorer-top { align-items: flex-end; display: flex; gap: 28px; justify-content: space-between; }
+.explorer-copy { max-width: 650px; }
+.explorer-copy .section-kicker { margin-bottom: 10px; }
+.explorer-copy h2 { margin-bottom: 10px; }
+.explorer-copy > p:last-child { color: #536071; margin-bottom: 0; max-width: 590px; }
+.explorer-controls { align-items: flex-end; display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
+.explorer-label { color: var(--muted); display: flex; flex-direction: column; font: 500 0.68rem "DM Mono", monospace; gap: 7px; text-transform: uppercase; }
+.explorer-label select { min-width: 185px; }
+.explorer-controls .button { min-height: 42px; }
+.explorer-stat-grid { display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); margin-top: 28px; }
+.explorer-stat { background: rgba(255,255,255,0.8); border: 1px solid rgba(36,107,156,0.15); border-radius: 13px; min-height: 92px; padding: 15px 16px; }
+.explorer-stat strong { color: var(--navy); display: block; font-size: 1.35rem; letter-spacing: -0.05em; line-height: 1.2; margin-top: 12px; }
+.finding-nav { border-top: 1px solid rgba(36,107,156,0.18); margin-top: 27px; padding-top: 20px; }
+.finding-nav-label { color: var(--muted); display: block; font: 500 0.66rem "DM Mono", monospace; margin-bottom: 12px; text-transform: uppercase; }
+.finding-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.finding-link { align-items: center; background: rgba(255,255,255,0.62); border: 1px solid rgba(36,107,156,0.18); border-radius: 999px; color: var(--navy); display: inline-flex; font-size: 0.74rem; font-weight: 700; gap: 7px; padding: 8px 12px; text-decoration: none; transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease; }
+.finding-link span { color: var(--red); font: 500 0.62rem "DM Mono", monospace; }
+.finding-link:hover, .finding-link.active { background: var(--navy); border-color: var(--navy); color: #fff; transform: translateY(-2px); }
+.finding-link:hover span, .finding-link.active span { color: #f5a09a; }
 .image-band { align-items: stretch; background: var(--navy); border-radius: 24px; box-shadow: var(--shadow); display: grid; grid-template-columns: minmax(220px, 0.85fr) 1.15fr; margin: 52px 0 30px; overflow: hidden; }
 .image-band img { height: 230px; object-fit: cover; width: 100%; }
 .image-band figcaption { display: flex; flex-direction: column; justify-content: center; padding: 28px 34px; }
@@ -188,6 +208,10 @@ tbody tr:hover { background: #fff5f4; }
   .headline-grid, .stat-grid, .filter-grid, .switch-row, .dashboard-chart-grid, .method-grid { grid-template-columns: 1fr 1fr; }
   .headline-card, .stat-card { min-height: 112px; padding: 15px; }
   .report-intro { margin-top: 62px; }
+  .explorer-top { align-items: flex-start; flex-direction: column; }
+  .explorer-controls { align-items: stretch; flex-direction: column; width: 100%; }
+  .explorer-label select, .explorer-controls .button { width: 100%; }
+  .explorer-stat-grid { grid-template-columns: 1fr 1fr; }
   .report-section { gap: 16px; grid-template-columns: 38px minmax(0, 1fr); padding: 55px 0 64px; }
   .section-number { font-size: 0.64rem; }
   .chart-wrap { height: 270px; padding: 15px; }
@@ -207,6 +231,7 @@ tbody tr:hover { background: #fff5f4; }
 
 @media (max-width: 450px) {
   .headline-grid, .stat-grid, .filter-grid, .switch-row, .method-grid { grid-template-columns: 1fr; }
+  .explorer-stat-grid { grid-template-columns: 1fr; }
   .dashboard-chart-grid { grid-template-columns: 1fr; }
   .wide-card { grid-column: span 1; }
   .hero-stamp { align-self: center; }

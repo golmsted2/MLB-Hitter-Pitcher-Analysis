@@ -58,6 +58,9 @@ def main() -> None:
     assert 'id="report-explorer"' in report
     assert 'id="month-focus-select"' in report
     assert report.count('data-report-jump=') >= 8
+    assert 'id="reading-progress-bar"' in report
+    assert report.count('class="chart-insight"') >= 8
+    assert 'id="back-to-top"' in report
     assert 'id="theme-toggle"' in report
     assert 'id="theme-toggle"' in dashboard
     assert 'src="theme.js"' in report
@@ -70,6 +73,10 @@ def main() -> None:
     assert 'id="summary-table"' in dashboard
     assert 'id="player-modal"' in dashboard
     assert 'id="player-modal-image"' in dashboard
+    assert 'id="player-comparison-chart"' in dashboard
+    assert 'id="search-pitcher"' in dashboard
+    assert 'id="search-batter"' in dashboard
+    assert 'id="player-modal-team"' in dashboard
 
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
     assert '"player_name"' in summary_text

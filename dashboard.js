@@ -22,6 +22,10 @@ const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
 const playerNames = new Map();
+const playerTeams = new Map();
+const TEAM_COLORS = {
+  AZ: "#a71930", ATL: "#ce1141", BAL: "#df4601", BOS: "#bd3039", CHC: "#0e3386", CWS: "#27251f", CIN: "#c6011f", CLE: "#00385d", COL: "#333366", DET: "#0c2340", HOU: "#002d62", KC: "#004687", LAA: "#ba0021", LAD: "#005a9c", MIA: "#00a3e0", MIL: "#12284b", MIN: "#002b5c", NYM: "#002d72", NYY: "#0c2340", OAK: "#003831", PHI: "#e81828", PIT: "#fdb827", SD: "#2f241d", SEA: "#0c2c56", SF: "#fd5a1e", STL: "#c41e3a", TB: "#092c5c", TEX: "#003278", TOR: "#134a8e", WAS: "#ab0003",
+};
 
 const filterKeys = [
   ["filter-season", "season"],
@@ -45,6 +49,7 @@ const breakdownLabels = {
 
 const metricDefinitions = {
   count: { label: "Pitch count", shortLabel: "Pitches", format: (value) => formatNumber(value) },
+  pitches: { label: "Pitch count", shortLabel: "Pitches", format: (value) => formatNumber(value) },
   avg_speed: { label: "Average pitch speed", shortLabel: "Avg speed", format: (value) => `${value.toFixed(2)} mph` },
   avg_exit_velocity: { label: "Average exit velocity", shortLabel: "Avg exit velocity", format: (value) => `${value.toFixed(2)} mph` },
   strike_rate: { label: "Strike rate", shortLabel: "Strike rate", format: (value) => `${(value * 100).toFixed(1)}%` },
@@ -149,23 +154,91 @@ function addOptions(selectId, key, firstLabel) {
   select.appendChild(fragment);
 }
 
+function filterPlayerOptions(selectId, query) {
+  const select = document.getElementById(selectId);
+  const normalizedQuery = query.trim().toLowerCase();
+  [...select.options].forEach((option, index) => {
+    if (index === 0) {
+      option.hidden = false;
+      return;
+    }
+    option.hidden = normalizedQuery && !option.textContent.toLowerCase().includes(normalizedQuery);
+  });
+}
+
+function recordPlayerTeam(role, playerId, team) {
+  if (!playerId || !team) return;
+  const key = `${role}:${playerId}`;
+  if (!playerTeams.has(key)) playerTeams.set(key, new Map());
+  const counts = playerTeams.get(key);
+  counts.set(team, (counts.get(team) || 0) + 1);
+}
+
+function getPlayerTeam(role, playerId) {
+  const counts = playerTeams.get(`${role}:${playerId}`);
+  if (!counts) return "";
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+}
+
+function playerTeamForRow(row, role) {
+  if (row.inning_topbot === "Top") return role === "batter" ? row.away_team : row.home_team;
+  if (row.inning_topbot === "Bot" || row.inning_topbot === "Bottom") return role === "batter" ? row.home_team : row.away_team;
+  return "";
+}
+
+let playerModalRequest = 0;
+
+function renderTeamBadge(teamInfo) {
+  const teamBadge = document.getElementById("player-modal-team");
+  const teamMark = document.getElementById("player-modal-team-mark");
+  const teamLogo = document.getElementById("player-modal-team-logo");
+  const teamName = document.getElementById("player-modal-team-name");
+  const abbreviation = teamInfo?.abbreviation || "";
+  teamBadge.hidden = !teamInfo;
+  teamName.textContent = teamInfo?.name || "Team unavailable";
+  teamMark.textContent = abbreviation || "MLB";
+  teamMark.style.backgroundColor = TEAM_COLORS[abbreviation] || "#246b9c";
+  teamMark.hidden = Boolean(teamInfo?.id);
+  teamLogo.hidden = !teamInfo?.id;
+  teamLogo.alt = teamInfo?.name ? `${teamInfo.name} logo` : "";
+  if (teamInfo?.id) {
+    teamLogo.onerror = () => { teamLogo.hidden = true; teamMark.hidden = false; };
+    teamLogo.src = `https://www.mlbstatic.com/team-logos/${teamInfo.id}.svg`;
+  }
+}
+
+async function fetchPlayerTeamInfo(playerId) {
+  try {
+    const response = await fetch(`https://statsapi.mlb.com/api/v1/people/${playerId}?hydrate=currentTeam`, { cache: "no-store" });
+    if (!response.ok) return null;
+    const player = (await response.json()).people?.[0];
+    const team = player?.currentTeam;
+    return team ? { id: team.id, abbreviation: team.abbreviation, name: team.name } : null;
+  } catch (error) {
+    return null;
+  }
+}
+
 function closePlayerModal() {
   const modal = document.getElementById("player-modal");
   modal.hidden = true;
   modal.setAttribute("aria-hidden", "true");
 }
 
-function showPlayerModal(key, value) {
+async function showPlayerModal(key, value) {
   if (!value) return;
+  const requestId = ++playerModalRequest;
   const modal = document.getElementById("player-modal");
   const image = document.getElementById("player-modal-image");
   const placeholder = document.getElementById("player-modal-placeholder");
   const name = playerNames.get(String(value)) || `MLB ID ${value}`;
   const role = key === "pitcher" ? "Selected pitcher" : "Selected batter";
+  const team = getPlayerTeam(key, value);
 
   document.getElementById("player-modal-role").textContent = role;
   document.getElementById("player-modal-name").textContent = name;
   document.getElementById("player-modal-id").textContent = `MLB ID ${value}`;
+  renderTeamBadge(team ? { abbreviation: team, name: team } : null);
   image.alt = `${name} headshot`;
   image.hidden = false;
   placeholder.hidden = true;
@@ -177,10 +250,19 @@ function showPlayerModal(key, value) {
   modal.hidden = false;
   modal.setAttribute("aria-hidden", "false");
   document.getElementById("close-player-modal").focus();
+  if (!team) {
+    const teamInfo = await fetchPlayerTeamInfo(value);
+    if (requestId === playerModalRequest && teamInfo) renderTeamBadge(teamInfo);
+  }
 }
 
 function currentFilters() {
   return Object.fromEntries(filterKeys.map(([id, key]) => [key, document.getElementById(id).value]));
+}
+
+function comparisonRows() {
+  const filters = currentFilters();
+  return allRows.filter((row) => filterKeys.every(([, key]) => key === "pitcher" || key === "batter" || !filters[key] || String(row[key]) === filters[key]));
 }
 
 function filteredRows() {
@@ -209,6 +291,64 @@ function sortedGroups(groups, key, metric) {
     return groups.sort((a, b) => String(a.value).localeCompare(String(b.value), undefined, { numeric: true }));
   }
   return groups.sort((a, b) => (getMetricValue(b, metric) ?? -Infinity) - (getMetricValue(a, metric) ?? -Infinity));
+}
+
+function populateComparisonPlayers() {
+  const role = document.getElementById("compare-role").value;
+  const values = uniqueValues(role).sort((a, b) => Number(a) - Number(b));
+  ["compare-player-a", "compare-player-b"].forEach((selectId) => {
+    const select = document.getElementById(selectId);
+    const previous = select.value;
+    select.innerHTML = '<option value="">Choose a player</option>';
+    values.forEach((value) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = displayValue(role, value);
+      select.appendChild(option);
+    });
+    if (values.includes(previous)) select.value = previous;
+  });
+  const playerA = document.getElementById("compare-player-a");
+  const playerB = document.getElementById("compare-player-b");
+  if (!playerA.value && values[0]) playerA.value = values[0];
+  if (!playerB.value && values[1]) playerB.value = values[1];
+  updatePlayerComparison();
+}
+
+function updatePlayerComparison() {
+  const role = document.getElementById("compare-role").value;
+  const playerA = document.getElementById("compare-player-a").value;
+  const playerB = document.getElementById("compare-player-b").value;
+  const metric = document.getElementById("compare-metric").value;
+  const summaryText = document.getElementById("compare-summary");
+  if (!playerA || !playerB) {
+    summaryText.textContent = "Choose two players to compare their filtered pitch-level numbers.";
+    if (charts["player-comparison"]) {
+      charts["player-comparison"].destroy();
+      delete charts["player-comparison"];
+    }
+    return;
+  }
+
+  const rows = comparisonRows();
+  const summaryA = aggregateRows(rows.filter((row) => String(row[role]) === playerA));
+  const summaryB = aggregateRows(rows.filter((row) => String(row[role]) === playerB));
+  const nameA = displayValue(role, playerA);
+  const nameB = displayValue(role, playerB);
+  const formatMetric = metric === "pitches" ? "pitches" : metric;
+  const valueA = getMetricValue(summaryA, metric);
+  const valueB = getMetricValue(summaryB, metric);
+  summaryText.textContent = `${nameA}: ${metricFormat(valueA, formatMetric)}  ·  ${nameB}: ${metricFormat(valueB, formatMetric)}`;
+  const percentage = metric === "strike_rate" || metric === "hard_hit_rate";
+  replaceChart("player-comparison", "player-comparison-chart", {
+    type: "bar",
+    data: { labels: [nameA, nameB], datasets: [{ label: metricDefinitions[metric].label, data: [valueA, valueB], backgroundColor: [REPORT_COLORS[0], REPORT_COLORS[1]], borderRadius: 7, barThickness: 42 }] },
+    options: {
+      ...chartOptions(false, false),
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: "#15283d", padding: 12, displayColors: false, callbacks: { label: (context) => metricFormat(context.raw, formatMetric) } } },
+      scales: { x: { grid: { display: false }, ticks: { color: "#667085", font: { family: "DM Mono" } } }, y: { beginAtZero: true, grid: { color: "#e5e9e7" }, ticks: { color: "#667085", callback: percentage ? (value) => `${(value * 100).toFixed(0)}%` : undefined } } },
+    },
+  });
 }
 
 function chartOptions(horizontal = false, percentageAxis = false) {
@@ -309,13 +449,20 @@ function updateDashboard() {
   updateTrend(rows, metric);
   updateMix(rows);
   updateOutcomes(rows);
+  updatePlayerComparison();
   updateChartTheme();
 }
 
 function resetFilters() {
   filterKeys.forEach(([id]) => { document.getElementById(id).value = ""; });
+  document.getElementById("search-pitcher").value = "";
+  document.getElementById("search-batter").value = "";
+  filterPlayerOptions("filter-pitcher", "");
+  filterPlayerOptions("filter-batter", "");
   document.getElementById("metric-select").value = "count";
   document.getElementById("breakdown-select").value = "month";
+  document.getElementById("compare-role").value = "pitcher";
+  populateComparisonPlayers();
   updateDashboard();
 }
 
@@ -327,8 +474,12 @@ function prepareFilters() {
   addOptions("filter-stand", "stand", "All batter stances");
   addOptions("filter-pitcher", "pitcher", "All pitchers");
   addOptions("filter-batter", "batter", "All batters");
+  populateComparisonPlayers();
   [...document.querySelectorAll("select")].forEach((select) => select.addEventListener("change", updateDashboard));
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
+  document.getElementById("search-pitcher").addEventListener("input", (event) => filterPlayerOptions("filter-pitcher", event.target.value));
+  document.getElementById("search-batter").addEventListener("input", (event) => filterPlayerOptions("filter-batter", event.target.value));
+  document.getElementById("compare-role").addEventListener("change", populateComparisonPlayers);
   document.getElementById("filter-pitcher").addEventListener("change", (event) => showPlayerModal("pitcher", event.target.value));
   document.getElementById("filter-batter").addEventListener("change", (event) => showPlayerModal("batter", event.target.value));
   document.getElementById("close-player-modal").addEventListener("click", closePlayerModal);
@@ -365,7 +516,7 @@ async function loadDashboardData() {
       if (results.errors.length) console.warn("CSV parsing warnings:", results.errors.slice(0, 3));
       results.data.forEach((row) => {
         if (!row.game_date || row.pitcher === null || row.batter === null) return;
-        allRows.push({
+        const normalizedRow = {
           game_date: row.game_date,
           season: row.season,
           month: row.month,
@@ -379,9 +530,13 @@ async function loadDashboardData() {
           stand: row.stand,
           home_team: row.home_team,
           away_team: row.away_team,
+          inning_topbot: row.inning_topbot,
           release_speed: row.release_speed,
           launch_speed: row.launch_speed,
-        });
+        };
+        allRows.push(normalizedRow);
+        recordPlayerTeam("pitcher", normalizedRow.pitcher, playerTeamForRow(normalizedRow, "pitcher"));
+        recordPlayerTeam("batter", normalizedRow.batter, playerTeamForRow(normalizedRow, "batter"));
         if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
       });
     }
@@ -389,11 +544,13 @@ async function loadDashboardData() {
     prepareFilters();
     status.textContent = `${formatNumber(allRows.length)} rows loaded · calculations are live`;
     status.classList.add("ready");
+    document.getElementById("dashboard-content").classList.remove("is-loading");
     updateDashboard();
   } catch (error) {
     console.error(error);
     status.textContent = "The dashboard data could not be loaded. Please refresh the GitHub Pages site.";
     status.classList.add("error");
+    document.getElementById("dashboard-content").classList.remove("is-loading");
   }
 }
 

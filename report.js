@@ -167,6 +167,22 @@ function setupFindingNavigation() {
   }
 }
 
+function setupReportControls() {
+  const progressBar = document.getElementById("reading-progress-bar");
+  const backToTop = document.getElementById("back-to-top");
+  const updateProgress = () => {
+    if (progressBar) {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) * 100 : 100;
+      progressBar.style.width = `${progress}%`;
+    }
+    if (backToTop) backToTop.classList.toggle("visible", window.scrollY > 650);
+  };
+  window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+  if (backToTop) backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+}
+
 function renderHeadline(data) {
   const headline = data.headline;
   document.querySelectorAll("[data-headline]").forEach((element) => {
@@ -242,6 +258,18 @@ function renderNarrative(data) {
     "definitions-copy",
     `${data.definitions.hit_rate}. ${data.definitions.strike_rate}. ${data.definitions.hard_hit_rate}. ${data.definitions.home_run_rate}. Averages use the non-missing values of the relevant numeric column.`,
   );
+
+  const busiestMonth = months.reduce((best, row) => row.pitches > best.pitches ? row : best, months[0]);
+  const highestHardHitMonth = months.reduce((best, row) => row.hard_hit_rate > best.hard_hit_rate ? row : best, months[0]);
+  const topOutcome = [...outcomes].sort((a, b) => b.count - a.count)[0];
+  setText("scale-insight", `Highest volume: ${formatMonthLabel(busiestMonth.month)} with ${formatNumber(busiestMonth.pitches)} pitches.`);
+  setText("mix-insight", `Most common pitch: ${mix[0].pitch_name}, accounting for ${mix[0].share.toFixed(1)}% of all pitches.`);
+  setText("speed-insight", `Fastest qualifying pitch: ${fastest.pitch_name} at ${fastest.avg_speed.toFixed(2)} mph on average.`);
+  setText("season-insight", `Highest hard-hit month: ${formatMonthLabel(highestHardHitMonth.month)} at ${formatPercent(highestHardHitMonth.hard_hit_rate)} of tracked balls in play.`);
+  setText("handedness-insight", `Largest matchup cell: P${largestHandGroup.p_throws} / B${largestHandGroup.stand} with ${formatNumber(largestHandGroup.pitches)} pitches.`);
+  setText("outcomes-insight", `Most common recorded outcome: ${topOutcome.event.replaceAll("_", " ")} (${formatNumber(topOutcome.count)} completed appearances).`);
+  setText("pitchers-insight", `Volume leader: ${topPitcherName} with ${formatNumber(topPitcher.pitches)} pitches in the five-month window.`);
+  setText("batters-insight", `Highest qualifying hit rate: ${topBatterName} at ${formatPercent(topBatter.hit_rate)} across ${formatNumber(topBatter.plate_appearances)} plate appearances.`);
 }
 
 function renderCharts(data) {
@@ -335,4 +363,7 @@ async function loadReport() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadReport);
+document.addEventListener("DOMContentLoaded", () => {
+  setupReportControls();
+  loadReport();
+});

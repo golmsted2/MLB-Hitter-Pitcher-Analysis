@@ -31,6 +31,8 @@
       </nav>
     </header>
 
+    <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+
     <main>
       <section class="hero report-hero">
         <div class="hero-copy">
@@ -45,6 +47,8 @@
         </div>
         <div class="hero-visual">
           <img src="assets/mlb-pitcher-action.jpg" alt="Paul Skenes pitching during a professional MLB game" />
+          <span class="image-credit">Paul Skenes · MLB game action</span>
+          <div class="scorebug" aria-hidden="true"><span>MLB ACTION</span><strong>2025</strong></div>
           <div class="hero-stamp" aria-hidden="true">
             <span>MLB</span>
             <strong>STATCAST</strong>
@@ -115,6 +119,7 @@
           <span class="section-kicker">The unit of analysis</span>
           <strong>One pitch. One matchup. A trail of measurable outcomes.</strong>
           <span>Statcast connects the pitcher, batter, pitch choice, and result at the event level.</span>
+          <small class="image-credit">Aaron Judge · MLB game action</small>
         </figcaption>
       </figure>
 
@@ -126,6 +131,7 @@
             <p id="scale-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="season-volume-chart" aria-label="Pitches by month"></canvas></div>
             <p class="chart-caption">The published data includes every regular-season pitch from April through August 2025. The months are stored as separate files so each stays below the 25 MB upload limit.</p>
+            <p class="chart-insight" id="scale-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -136,6 +142,7 @@
             <p id="mix-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="pitch-mix-chart" aria-label="Pitch mix by pitch type"></canvas></div>
             <p class="chart-caption">The chart shows the ten most frequent pitch types. Small categories remain in the source data and in the dashboard.</p>
+            <p class="chart-insight" id="mix-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -146,6 +153,7 @@
             <p id="speed-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="pitch-speed-chart" aria-label="Average speed by pitch type"></canvas></div>
             <p class="chart-caption">Only pitch types with at least 1,000 observations are shown so that rare pitches do not dominate the ranking.</p>
+            <p class="chart-insight" id="speed-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -156,6 +164,7 @@
             <p id="season-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="season-metrics-chart" aria-label="Monthly average speed and exit velocity"></canvas></div>
             <p class="chart-caption">The two lines use different units, so the chart is intended to show direction across the five months rather than compare their vertical heights.</p>
+            <p class="chart-insight" id="season-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -166,6 +175,7 @@
             <p id="handedness-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="handedness-chart" aria-label="Pitch volume by pitcher and batter handedness"></canvas></div>
             <p class="chart-caption">P = pitcher throwing hand; B = batter stance. MLB IDs are used in the source file so that player identity remains consistent across monthly samples.</p>
+            <p class="chart-insight" id="handedness-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -176,6 +186,7 @@
             <p id="outcomes-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="outcomes-chart" aria-label="Most common plate appearance outcomes"></canvas></div>
             <p class="chart-caption">An outcome is recorded only on the pitch that ends a plate appearance; pitches earlier in the same appearance have a blank outcome.</p>
+            <p class="chart-insight" id="outcomes-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -186,6 +197,7 @@
             <p id="pitchers-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="top-pitchers-chart" aria-label="Top pitchers by pitch count"></canvas></div>
             <p class="chart-caption">These labels use player names resolved from the MLB IDs in the source file. The interactive dashboard lets readers filter to any pitcher in the file.</p>
+            <p class="chart-insight" id="pitchers-insight">Chart annotation loading…</p>
           </div>
         </section>
 
@@ -196,6 +208,7 @@
             <p id="batters-copy">Loading the finding…</p>
             <div class="chart-wrap"><canvas id="top-batters-chart" aria-label="Top batter hit rates"></canvas></div>
             <p class="chart-caption">This ranking includes only batters with at least 100 completed plate appearances in the sample, but the threshold is still much smaller than a full season.</p>
+            <p class="chart-insight" id="batters-insight">Chart annotation loading…</p>
           </div>
         </section>
       </div>
@@ -238,6 +251,8 @@
         </div>
         <p class="source-line">Source: <a href="https://baseballsavant.mlb.com/csv-docs" target="_blank" rel="noreferrer">Baseball Savant Statcast CSV documentation ↗</a></p>
       </section>
+
+      <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">↑ <span>Back to top</span></button>
     </main>
 
     <footer class="site-footer">
@@ -246,6 +261,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="report.js?v=5"></script>
+    <script src="report.js?v=6"></script>
   </body>
 </html>

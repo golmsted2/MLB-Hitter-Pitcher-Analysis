@@ -1,0 +1,56 @@
+"""Check the local project against the assignment's structural requirements."""
+
+from pathlib import Path
+
+import pandas as pd
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA = ROOT / "data" / "mlb_statcast_2021_2025.csv"
+
+
+def main() -> None:
+    required_files = [
+        "index.html",
+        "dashboard.html",
+        "styles.css",
+        "report.js",
+        "dashboard.js",
+        "README.md",
+        "submission.txt",
+        "data/report_data.json",
+        "scripts/analyze_data.py",
+        "scripts/make_small_dataset.py",
+    ]
+    missing = [path for path in required_files if not (ROOT / path).exists()]
+    assert not missing, f"Missing files: {missing}"
+
+    data = pd.read_csv(DATA, low_memory=False)
+    assert len(data) >= 50_000, len(data)
+    assert len(data.columns) >= 8, len(data.columns)
+    assert data["season"].nunique() >= 5, data["season"].nunique()
+    assert data["pitcher"].nunique() >= 10, data["pitcher"].nunique()
+    assert data["batter"].nunique() >= 10, data["batter"].nunique()
+
+    categorical = ["pitch_type", "p_throws", "stand", "home_team"]
+    numeric = ["release_speed", "launch_speed", "launch_angle", "balls", "strikes"]
+    assert all(column in data.columns for column in categorical)
+    assert all(column in data.columns for column in numeric)
+
+    report = (ROOT / "index.html").read_text(encoding="utf-8")
+    dashboard = (ROOT / "dashboard.html").read_text(encoding="utf-8")
+    assert report.count("<canvas") >= 8
+    assert dashboard.count("<canvas") >= 4
+    assert dashboard.count('id="filter-') >= 4
+    assert 'id="reset-filters"' in dashboard
+    assert 'id="summary-table"' in dashboard
+
+    print("PASS: project files are present")
+    print(f"PASS: {len(data):,} rows and {len(data.columns)} columns")
+    print(f"PASS: {data['season'].nunique()} seasons, {data['pitcher'].nunique():,} pitchers, {data['batter'].nunique():,} batters")
+    print("PASS: report has at least eight charts")
+    print("PASS: dashboard has filters, four charts, a table, and reset control")
+
+
+if __name__ == "__main__":
+    main()

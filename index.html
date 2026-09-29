@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Between the Lines | MLB Statcast</title>
+    <meta
+      name="description"
+      content="A pitch-by-pitch look at MLB pitcher and hitter matchups from 2021–2025."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Between the Lines home">
+        <span class="brand-mark">B/T</span>
+        <span>Between the Lines</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="active" href="index.html">Report</a>
+        <a href="dashboard.html">Dashboard <span class="nav-arrow">↗</span></a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero report-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Financial Data Analytics · Baseball edition</p>
+          <h1>What happens between the pitcher and the hitter?</h1>
+          <p class="hero-dek" id="hero-summary">
+            This report examines pitch-by-pitch MLB Statcast data from five April samples,
+            looking for the patterns that connect pitch selection, velocity, handedness, and
+            batted-ball outcomes.
+          </p>
+          <p class="byline">Prepared by <span class="placeholder-name">Your Name</span> · September 2026</p>
+        </div>
+        <div class="hero-stamp" aria-hidden="true">
+          <span>MLB</span>
+          <strong>STATCAST</strong>
+          <small>2021—2025</small>
+        </div>
+      </section>
+
+      <section class="headline-grid" id="headline-cards" aria-label="Headline numbers">
+        <div class="headline-card"><span class="card-label">Pitches analyzed</span><strong data-headline="pitches">—</strong><span class="card-note">regular-season pitches</span></div>
+        <div class="headline-card"><span class="card-label">Seasons</span><strong data-headline="seasons">—</strong><span class="card-note">April 1 through May 1</span></div>
+        <div class="headline-card"><span class="card-label">Pitchers</span><strong data-headline="pitchers">—</strong><span class="card-note">unique MLB IDs</span></div>
+        <div class="headline-card"><span class="card-label">Batters</span><strong data-headline="batters">—</strong><span class="card-note">unique MLB IDs</span></div>
+        <div class="headline-card accent-card"><span class="card-label">Average pitch speed</span><strong data-headline="avg_speed">—</strong><span class="card-note">miles per hour</span></div>
+        <div class="headline-card accent-card"><span class="card-label">Hard-hit rate</span><strong data-headline="hard_hit_rate">—</strong><span class="card-note">95+ mph batted balls</span></div>
+      </section>
+
+      <div class="report-intro">
+        <p class="section-kicker">The short version</p>
+        <p>
+          Statcast turns a plate appearance into a sequence of measurable decisions. The pitcher
+          chooses a pitch, the hitter chooses whether to swing, and the ball records what happened
+          next. The findings below focus on the April sample from each season, which keeps the
+          comparison consistent while still providing 150,000 pitch events.
+        </p>
+      </div>
+
+      <div class="report-sections">
+        <section class="report-section" id="section-scale">
+          <div class="section-number">01</div>
+          <div class="section-body">
+            <h2>This is a large event-level panel, not a box-score snapshot.</h2>
+            <p id="scale-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="season-volume-chart" aria-label="Pitches by season"></canvas></div>
+            <p class="chart-caption">The published file uses a deterministic 30,000-pitch sample from the same month-long window in each season; differences in volume reflect the games and pitch counts recorded in that window.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-mix">
+          <div class="section-number">02</div>
+          <div class="section-body">
+            <h2>Four-seam fastballs are the main pitch in the sample.</h2>
+            <p id="mix-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="pitch-mix-chart" aria-label="Pitch mix by pitch type"></canvas></div>
+            <p class="chart-caption">The chart shows the ten most frequent pitch types. Small categories remain in the source data and in the dashboard.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-speed">
+          <div class="section-number">03</div>
+          <div class="section-body">
+            <h2>Fastballs create the velocity ceiling; breaking balls create the separation.</h2>
+            <p id="speed-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="pitch-speed-chart" aria-label="Average speed by pitch type"></canvas></div>
+            <p class="chart-caption">Only pitch types with at least 1,000 observations are shown so that rare pitches do not dominate the ranking.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-season">
+          <div class="section-number">04</div>
+          <div class="section-body">
+            <h2>Average pitch speed was highest in the 2025 April sample.</h2>
+            <p id="season-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="season-metrics-chart" aria-label="Season average speed and exit velocity"></canvas></div>
+            <p class="chart-caption">The two lines use different units, so the chart is intended to show direction over time rather than compare their vertical heights.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-handedness">
+          <div class="section-number">05</div>
+          <div class="section-body">
+            <h2>Right-handed pitchers facing right-handed hitters form the largest matchup group.</h2>
+            <p id="handedness-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="handedness-chart" aria-label="Pitch volume by pitcher and batter handedness"></canvas></div>
+            <p class="chart-caption">P = pitcher throwing hand; B = batter stance. MLB IDs are used in the source file so that player identity remains consistent across seasons.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-outcomes">
+          <div class="section-number">06</div>
+          <div class="section-body">
+            <h2>Field outs and strikeouts dominate the recorded plate-appearance outcomes.</h2>
+            <p id="outcomes-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="outcomes-chart" aria-label="Most common plate appearance outcomes"></canvas></div>
+            <p class="chart-caption">An outcome is recorded only on the pitch that ends a plate appearance; pitches earlier in the same appearance have a blank outcome.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-pitchers">
+          <div class="section-number">07</div>
+          <div class="section-body">
+            <h2>Pitch volume is concentrated among the busiest pitchers.</h2>
+            <p id="pitchers-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="top-pitchers-chart" aria-label="Top pitchers by pitch count"></canvas></div>
+            <p class="chart-caption">These labels are MLB player IDs. The interactive dashboard lets readers filter to any pitcher in the file.</p>
+          </div>
+        </section>
+
+        <section class="report-section" id="section-batters">
+          <div class="section-number">08</div>
+          <div class="section-body">
+            <h2>High observed hit rates need a sample-size warning.</h2>
+            <p id="batters-copy">Loading the finding…</p>
+            <div class="chart-wrap"><canvas id="top-batters-chart" aria-label="Top batter hit rates"></canvas></div>
+            <p class="chart-caption">This ranking includes only batters with at least 100 completed plate appearances in the sample, but the threshold is still much smaller than a full season.</p>
+          </div>
+        </section>
+      </div>
+
+      <section class="method-section" id="methodology">
+        <p class="section-kicker">Data notes</p>
+        <h2>How to read this dataset</h2>
+        <div class="method-grid">
+          <div>
+            <h3>Source and unit of observation</h3>
+            <p>
+              The data comes from MLB’s public Baseball Savant Statcast search export. One row is
+              one pitch in one regular-season game. The file covers April 1 through May 1 in each
+              season from 2021 through 2025. The time columns are <code>game_date</code>,
+              <code>month</code>, and <code>season</code>; the group columns are the MLB player IDs
+              in <code>pitcher</code> and <code>batter</code>.
+            </p>
+          </div>
+          <div>
+            <h3>Rows and missing values</h3>
+            <p>
+              The download script keeps regular-season records and does not remove pitch events
+              simply because a result is missing. Statcast naturally has blank values for measures
+              that do not apply to every pitch: for example, exit velocity exists only for batted
+              balls, and <code>events</code> exists only for the pitch that ends a plate appearance.
+            </p>
+          </div>
+          <div>
+            <h3>Rates and averages</h3>
+            <p id="definitions-copy">Loading calculation definitions…</p>
+          </div>
+          <div>
+            <h3>Explore the filters</h3>
+            <p>
+              The <a href="dashboard.html">dashboard</a> loads the CSV in the browser. It lets you
+              filter by season, month, pitch type, pitcher, batter, and handedness, then switch the
+              measure and the grouping variable used by the charts and table.
+            </p>
+          </div>
+        </div>
+        <p class="source-line">Source: <a href="https://baseballsavant.mlb.com/csv-docs" target="_blank" rel="noreferrer">Baseball Savant Statcast CSV documentation ↗</a></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Between the Lines · MLB Statcast project</span>
+      <a href="dashboard.html">Open the dashboard ↗</a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="report.js"></script>
+  </body>
+</html>

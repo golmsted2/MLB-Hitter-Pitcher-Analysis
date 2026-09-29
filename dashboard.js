@@ -11,6 +11,13 @@ const STRIKE_DESCRIPTIONS = new Set([
 
 const HIT_EVENTS = new Set(["single", "double", "triple", "home_run"]);
 const REPORT_COLORS = ["#246b9c", "#d7473f", "#7fa8c9", "#a52f32", "#d9e8f3", "#eeaaa6", "#173d5b", "#e36f68"];
+const DATA_FILES = [
+  "data/months/mlb_statcast_2025_04.csv",
+  "data/months/mlb_statcast_2025_05.csv",
+  "data/months/mlb_statcast_2025_06.csv",
+  "data/months/mlb_statcast_2025_07.csv",
+  "data/months/mlb_statcast_2025_08.csv",
+];
 const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
@@ -280,20 +287,39 @@ async function loadDashboardData() {
     }
 
     if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
-    const response = await fetch("data/mlb_statcast_2025_months.csv?v=3", { cache: "no-store" });
-    if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
-    const csvText = await response.text();
-    const results = Papa.parse(csvText, {
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-    });
-    if (results.errors.length) console.warn("CSV parsing warnings:", results.errors.slice(0, 3));
-    results.data.forEach((row) => {
-      if (!row.game_date || row.pitcher === null || row.batter === null) return;
-      allRows.push(row);
-      if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
-    });
+    for (let index = 0; index < DATA_FILES.length; index += 1) {
+      const response = await fetch(`${DATA_FILES[index]}?v=4`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
+      status.textContent = `Loading month ${index + 1} of ${DATA_FILES.length}…`;
+      const csvText = await response.text();
+      const results = Papa.parse(csvText, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+      });
+      if (results.errors.length) console.warn("CSV parsing warnings:", results.errors.slice(0, 3));
+      results.data.forEach((row) => {
+        if (!row.game_date || row.pitcher === null || row.batter === null) return;
+        allRows.push({
+          game_date: row.game_date,
+          season: row.season,
+          month: row.month,
+          pitcher: row.pitcher,
+          batter: row.batter,
+          pitch_type: row.pitch_type,
+          pitch_name: row.pitch_name,
+          description: row.description,
+          events: row.events,
+          p_throws: row.p_throws,
+          stand: row.stand,
+          home_team: row.home_team,
+          away_team: row.away_team,
+          release_speed: row.release_speed,
+          launch_speed: row.launch_speed,
+        });
+        if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
+      });
+    }
     if (!allRows.length) throw new Error("The CSV loaded but contained no usable rows");
     prepareFilters();
     status.textContent = `${formatNumber(allRows.length)} rows loaded · calculations are live`;

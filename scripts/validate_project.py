@@ -6,7 +6,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data" / "mlb_statcast_2025_months.csv"
+DATA_DIR = ROOT / "data" / "months"
 
 
 def main() -> None:
@@ -21,7 +21,11 @@ def main() -> None:
         "README.md",
         "submission.txt",
         "data/report_data.json",
-        "data/mlb_statcast_2025_months.csv",
+        "data/months/mlb_statcast_2025_04.csv",
+        "data/months/mlb_statcast_2025_05.csv",
+        "data/months/mlb_statcast_2025_06.csv",
+        "data/months/mlb_statcast_2025_07.csv",
+        "data/months/mlb_statcast_2025_08.csv",
         "data/player_names.json",
         "scripts/analyze_data.py",
         "scripts/create_player_names.py",
@@ -31,8 +35,10 @@ def main() -> None:
     missing = [path for path in required_files if not (ROOT / path).exists()]
     assert not missing, f"Missing files: {missing}"
 
-    data = pd.read_csv(DATA, low_memory=False)
-    assert len(data) >= 50_000, len(data)
+    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
+    assert len(data_paths) == 5, len(data_paths)
+    data = pd.concat([pd.read_csv(path, low_memory=False) for path in data_paths], ignore_index=True)
+    assert len(data) >= 500_000, len(data)
     assert len(data.columns) >= 8, len(data.columns)
     assert data["season"].nunique() == 1, data["season"].nunique()
     assert data["season"].iloc[0] == 2025, data["season"].iloc[0]

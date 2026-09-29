@@ -10,12 +10,18 @@ from pybaseball import playerid_reverse_lookup
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2025_months.csv"
+DATA_DIR = PROJECT_ROOT / "data" / "months"
 NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
 
 def main() -> None:
-    ids_frame = pd.read_csv(DATA_PATH, usecols=["pitcher", "batter"], low_memory=False)
+    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
+    if not data_paths:
+        raise FileNotFoundError(f"No monthly CSV files found in {DATA_DIR}")
+    ids_frame = pd.concat(
+        [pd.read_csv(path, usecols=["pitcher", "batter"], low_memory=False) for path in data_paths],
+        ignore_index=True,
+    )
     player_ids = sorted(
         {
             int(player_id)

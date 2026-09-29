@@ -9,7 +9,7 @@ import pandas as pd
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "data" / "mlb_statcast_2025_months.csv"
+DATA_DIR = PROJECT_ROOT / "data" / "months"
 SUMMARY_PATH = PROJECT_ROOT / "data" / "report_data.json"
 NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
@@ -28,7 +28,13 @@ STRIKE_DESCRIPTIONS = {
 
 
 def clean_data() -> pd.DataFrame:
-    data = pd.read_csv(DATA_PATH, low_memory=False)
+    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
+    if not data_paths:
+        raise FileNotFoundError(f"No monthly CSV files found in {DATA_DIR}")
+    data = pd.concat(
+        [pd.read_csv(path, low_memory=False) for path in data_paths],
+        ignore_index=True,
+    )
     data["game_date"] = pd.to_datetime(data["game_date"])
     data["season"] = data["season"].astype(int)
     data["is_pa"] = data["events"].notna()

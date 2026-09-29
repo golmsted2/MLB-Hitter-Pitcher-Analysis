@@ -268,7 +268,7 @@ function prepareFilters() {
 
 async function loadDashboardData() {
   try {
-    const namesResponse = await fetch("data/player_names.json");
+    const namesResponse = await fetch("data/player_names.json?v=2", { cache: "no-store" });
     if (namesResponse.ok) {
       const names = await namesResponse.json();
       Object.entries(names).forEach(([playerId, name]) => playerNames.set(playerId, name));

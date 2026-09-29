@@ -199,9 +199,21 @@ function renderCharts(data) {
 
 async function loadReport() {
   try {
-    const response = await fetch("data/report_data.json");
+    const [response, namesResponse] = await Promise.all([
+      fetch("data/report_data.json?v=2", { cache: "no-store" }),
+      fetch("data/player_names.json?v=2", { cache: "no-store" }),
+    ]);
     if (!response.ok) throw new Error(`Could not load report data (${response.status})`);
     const data = await response.json();
+    const playerNames = namesResponse.ok ? await namesResponse.json() : {};
+    data.top_pitchers = data.top_pitchers.map((row) => ({
+      ...row,
+      player_name: row.player_name || playerNames[String(row.pitcher)] || `MLB ID ${row.pitcher}`,
+    }));
+    data.top_batters = data.top_batters.map((row) => ({
+      ...row,
+      player_name: row.player_name || playerNames[String(row.batter)] || `MLB ID ${row.batter}`,
+    }));
     renderHeadline(data);
     renderNarrative(data);
     renderCharts(data);

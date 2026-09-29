@@ -267,40 +267,43 @@ function prepareFilters() {
 }
 
 async function loadDashboardData() {
+  const status = document.getElementById("loading-status");
   try {
-    const namesResponse = await fetch("data/player_names.json?v=2", { cache: "no-store" });
-    if (namesResponse.ok) {
-      const names = await namesResponse.json();
-      Object.entries(names).forEach(([playerId, name]) => playerNames.set(playerId, name));
+    try {
+      const namesResponse = await fetch("data/player_names.json?v=2", { cache: "no-store" });
+      if (namesResponse.ok) {
+        const names = await namesResponse.json();
+        Object.entries(names).forEach(([playerId, name]) => playerNames.set(playerId, name));
+      }
+    } catch (error) {
+      console.warn("Player names could not be loaded; MLB IDs will be shown.", error);
     }
-  } catch (error) {
-    console.warn("Player names could not be loaded; MLB IDs will be shown.", error);
-  }
 
-  Papa.parse("data/mlb_statcast_2021_2025.csv", {
-    download: true,
-    header: true,
-    dynamicTyping: true,
-    skipEmptyLines: true,
-    worker: true,
-    complete: (results) => {
-      results.data.forEach((row) => {
-        if (!row.game_date || row.pitcher === null || row.batter === null) return;
-        allRows.push(row);
-        if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
-      });
-      prepareFilters();
-      document.getElementById("loading-status").textContent = `${formatNumber(allRows.length)} rows loaded · calculations are live`;
-      document.getElementById("loading-status").classList.add("ready");
-      updateDashboard();
-    },
-    error: (error) => {
-      console.error(error);
-      const status = document.getElementById("loading-status");
-      status.textContent = "The data could not be loaded. Open this page through GitHub Pages or a local web server.";
-      status.classList.add("error");
-    },
-  });
+    if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
+    const response = await fetch("data/mlb_statcast_2021_2025.csv?v=2", { cache: "no-store" });
+    if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
+    const csvText = await response.text();
+    const results = Papa.parse(csvText, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+    });
+    if (results.errors.length) console.warn("CSV parsing warnings:", results.errors.slice(0, 3));
+    results.data.forEach((row) => {
+      if (!row.game_date || row.pitcher === null || row.batter === null) return;
+      allRows.push(row);
+      if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
+    });
+    if (!allRows.length) throw new Error("The CSV loaded but contained no usable rows");
+    prepareFilters();
+    status.textContent = `${formatNumber(allRows.length)} rows loaded · calculations are live`;
+    status.classList.add("ready");
+    updateDashboard();
+  } catch (error) {
+    console.error(error);
+    status.textContent = "The dashboard data could not be loaded. Please refresh the GitHub Pages site.";
+    status.classList.add("error");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", loadDashboardData);

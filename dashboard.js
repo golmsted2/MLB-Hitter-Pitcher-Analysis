@@ -55,8 +55,12 @@ function formatNumber(value) {
   return Number.isFinite(value) ? new Intl.NumberFormat("en-US").format(Math.round(value)) : "—";
 }
 
+function isFiniteNumber(value) {
+  return value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+}
+
 function mean(rows, key) {
-  const values = rows.map((row) => Number(row[key])).filter(Number.isFinite);
+  const values = rows.filter((row) => isFiniteNumber(row[key])).map((row) => Number(row[key]));
   return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
 }
 
@@ -70,14 +74,15 @@ function isStrike(row) {
 }
 
 function isBattedBall(row) {
-  return row.description === "hit_into_play" && Number.isFinite(Number(row.launch_speed));
+  return row.description === "hit_into_play" && isFiniteNumber(row.launch_speed);
 }
 
 function aggregateRows(rows) {
+  const battedBallRows = rows.filter(isBattedBall);
   return {
     pitches: rows.length,
     avg_speed: mean(rows, "release_speed"),
-    avg_exit_velocity: mean(rows, "launch_speed"),
+    avg_exit_velocity: mean(battedBallRows, "launch_speed"),
     strike_rate: percentage(rows, isStrike),
     hard_hit_rate: percentage(rows, (row) => Number(row.launch_speed) >= 95, isBattedBall),
     plate_appearances: rows.filter((row) => row.events).length,

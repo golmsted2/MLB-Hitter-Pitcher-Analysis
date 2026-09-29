@@ -68,6 +68,9 @@ def main() -> None:
 
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
     assert '"player_name"' in summary_text
+    dashboard_js = (ROOT / "dashboard.js").read_text(encoding="utf-8")
+    assert "avg_exit_velocity: mean(battedBallRows, \"launch_speed\")" in dashboard_js
+    assert "description === \"hit_into_play\"" in dashboard_js
 
     print("PASS: project files are present")
     print(f"PASS: {len(data):,} rows and {len(data.columns)} columns")

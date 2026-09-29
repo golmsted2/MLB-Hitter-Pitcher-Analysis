@@ -63,7 +63,7 @@ def load_player_names() -> dict[str, str]:
 def main() -> None:
     data = clean_data()
     pa = data[data["is_pa"]].copy()
-    batted = data[data["is_batted_ball"]].copy()
+    batted = data[data["is_batted_ball"] & data["launch_speed"].notna()].copy()
 
     pitch_mix = (
         data.groupby(["pitch_type", "pitch_name"], dropna=False)
@@ -88,13 +88,13 @@ def main() -> None:
         .agg(
             pitches=("pitcher", "size"),
             avg_speed=("release_speed", "mean"),
-            avg_exit_velocity=("launch_speed", "mean"),
             strike_rate=("is_strike", "mean"),
         )
         .reset_index()
     )
     month_batted = batted.groupby("month").agg(
         batted_balls=("launch_speed", "size"),
+        avg_exit_velocity=("launch_speed", "mean"),
         hard_hit_rate=("is_hard_hit", "mean"),
     )
     month_summary = month_summary.merge(month_batted, on="month")

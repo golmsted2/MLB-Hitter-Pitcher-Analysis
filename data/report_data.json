@@ -6,7 +6,7 @@
     "pitchers": 830,
     "batters": 649,
     "avg_speed": 89.34,
-    "hard_hit_rate": 40.88,
+    "hard_hit_rate": 41.03,
     "plate_appearances": 150165,
     "hits": 33018,
     "home_runs": 4589,
@@ -147,45 +147,45 @@
       "month": "2025-04",
       "pitches": 114767,
       "avg_speed": 89.07,
-      "avg_exit_velocity": 82.93,
       "strike_rate": 0.46,
-      "batted_balls": 19963,
-      "hard_hit_rate": 0.4
+      "batted_balls": 19887,
+      "avg_exit_velocity": 88.72,
+      "hard_hit_rate": 0.41
     },
     {
       "month": "2025-05",
       "pitches": 120218,
       "avg_speed": 89.36,
-      "avg_exit_velocity": 83.25,
       "strike_rate": 0.46,
-      "batted_balls": 21347,
-      "hard_hit_rate": 0.41
+      "batted_balls": 21272,
+      "avg_exit_velocity": 89.13,
+      "hard_hit_rate": 0.42
     },
     {
       "month": "2025-06",
       "pitches": 115816,
       "avg_speed": 89.37,
-      "avg_exit_velocity": 83.18,
       "strike_rate": 0.46,
-      "batted_balls": 20593,
+      "batted_balls": 20481,
+      "avg_exit_velocity": 88.85,
       "hard_hit_rate": 0.41
     },
     {
       "month": "2025-07",
       "pitches": 107305,
       "avg_speed": 89.48,
-      "avg_exit_velocity": 83.05,
       "strike_rate": 0.46,
-      "batted_balls": 19089,
+      "batted_balls": 19031,
+      "avg_exit_velocity": 88.68,
       "hard_hit_rate": 0.41
     },
     {
       "month": "2025-08",
       "pitches": 124298,
       "avg_speed": 89.41,
-      "avg_exit_velocity": 83.04,
       "strike_rate": 0.46,
-      "batted_balls": 21707,
+      "batted_balls": 21651,
+      "avg_exit_velocity": 88.61,
       "hard_hit_rate": 0.41
     }
   ],

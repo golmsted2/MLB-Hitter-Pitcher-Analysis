@@ -55,6 +55,8 @@ def main() -> None:
     dashboard = (ROOT / "dashboard.html").read_text(encoding="utf-8")
     assert report.count("<canvas") >= 8
     assert dashboard.count("<canvas") >= 4
+    assert 'assets/baseball-favicon.svg' in report
+    assert 'assets/baseball-favicon.svg' in dashboard
     assert dashboard.count('id="filter-') >= 4
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Baseball favicon</title>
+  <desc id="desc">A white baseball with red stitching</desc>
+  <circle cx="32" cy="32" r="29" fill="#f8fbfd" stroke="#0f2942" stroke-width="3"/>
+  <path d="M16 8c8 6 12 13 12 24s-4 18-12 24M48 8c-8 6-12 13-12 24s4 18 12 24" fill="none" stroke="#c94343" stroke-width="3" stroke-linecap="round"/>
+  <path d="M19 13l4 4M16 20l5 3M15 28l6 1M15 36l6-1M16 44l5-3M19 51l4-4M45 13l-4 4M48 20l-5 3M49 28l-6 1M49 36l-6-1M48 44l-5-3M45 51l-4-4" fill="none" stroke="#c94343" stroke-width="2" stroke-linecap="round"/>
+</svg>

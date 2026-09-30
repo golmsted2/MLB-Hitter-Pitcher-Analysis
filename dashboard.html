@@ -109,41 +109,6 @@
         </div>
       </section>
 
-      <section class="player-comparison-panel dashboard-card" aria-labelledby="player-comparison-title">
-        <div class="compare-heading">
-          <div>
-            <p class="section-kicker">Player matchup</p>
-            <h2 id="player-comparison-title">Compare two players.</h2>
-            <p class="compare-description">The comparison respects the season, month, pitch, and handedness filters above while keeping both player choices open.</p>
-          </div>
-          <span class="scorebug scorebug-inline" aria-hidden="true"><span>HEAD TO HEAD</span><strong>LIVE</strong></span>
-        </div>
-        <div class="compare-controls">
-          <label class="control-field">Compare
-            <select id="compare-role"><option value="pitcher">Pitchers</option><option value="batter">Batters</option></select>
-          </label>
-          <label class="control-field">Player A
-            <select id="compare-player-a"><option value="">Loading players…</option></select>
-          </label>
-          <label class="control-field">Player B
-            <select id="compare-player-b"><option value="">Loading players…</option></select>
-          </label>
-          <label class="control-field">Measure
-            <select id="compare-metric">
-              <option value="pitches">Pitch count</option>
-              <option value="avg_speed">Average pitch speed</option>
-              <option value="avg_exit_velocity">Average exit velocity</option>
-              <option value="strike_rate">Strike rate</option>
-              <option value="hard_hit_rate">Hard-hit rate</option>
-            </select>
-          </label>
-        </div>
-        <div class="compare-output">
-          <div class="compare-summary" id="compare-summary" aria-live="polite">Choose two players to compare their filtered pitch-level numbers.</div>
-          <div class="compare-chart-wrap"><canvas id="player-comparison-chart" aria-label="Comparison of two selected players"></canvas></div>
-        </div>
-      </section>
-
       <section class="selected-matchup dashboard-card" aria-labelledby="selected-matchup-title">
         <div class="compare-heading">
           <div>
@@ -223,6 +188,41 @@
             </table>
           </div>
         </section>
+      </section>
+
+      <section class="player-comparison-panel dashboard-card" aria-labelledby="player-comparison-title">
+        <div class="compare-heading">
+          <div>
+            <p class="section-kicker">Player matchup</p>
+            <h2 id="player-comparison-title">Compare two players.</h2>
+            <p class="compare-description">The comparison respects the season, month, pitch, and handedness filters above while keeping both player choices open.</p>
+          </div>
+          <span class="scorebug scorebug-inline" aria-hidden="true"><span>HEAD TO HEAD</span><strong>LIVE</strong></span>
+        </div>
+        <div class="compare-controls">
+          <label class="control-field">Compare
+            <select id="compare-role"><option value="pitcher">Pitchers</option><option value="batter">Batters</option></select>
+          </label>
+          <label class="control-field">Player A
+            <select id="compare-player-a"><option value="">Loading players…</option></select>
+          </label>
+          <label class="control-field">Player B
+            <select id="compare-player-b"><option value="">Loading players…</option></select>
+          </label>
+          <label class="control-field">Measure
+            <select id="compare-metric">
+              <option value="pitches">Pitch count</option>
+              <option value="avg_speed">Average pitch speed</option>
+              <option value="avg_exit_velocity">Average exit velocity</option>
+              <option value="strike_rate">Strike rate</option>
+              <option value="hard_hit_rate">Hard-hit rate</option>
+            </select>
+          </label>
+        </div>
+        <div class="compare-output">
+          <div class="compare-summary" id="compare-summary" aria-live="polite">Choose two players to compare their filtered pitch-level numbers.</div>
+          <div class="compare-chart-wrap"><canvas id="player-comparison-chart" aria-label="Comparison of two selected players"></canvas></div>
+        </div>
       </section>
     </main>
 

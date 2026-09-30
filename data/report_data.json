@@ -1,16 +1,18 @@
 {
   "headline": {
-    "pitches": 582404,
-    "months": 5,
-    "season": 2025,
-    "pitchers": 830,
-    "batters": 649,
-    "avg_speed": 89.34,
-    "hard_hit_rate": 41.03,
-    "plate_appearances": 150165,
-    "hits": 33018,
-    "home_runs": 4589,
-    "strikeouts": 32943
+    "pitches": 3567064,
+    "months": 36,
+    "seasons": 5,
+    "first_season": 2021,
+    "last_season": 2025,
+    "pitchers": 1743,
+    "batters": 1557,
+    "avg_speed": 89.05,
+    "hard_hit_rate": 39.38,
+    "plate_appearances": 914639,
+    "hits": 199926,
+    "home_runs": 28126,
+    "strikeouts": 206606
   },
   "definitions": {
     "hit_rate": "hits divided by completed plate appearances; hits are singles, doubles, triples, and home runs",
@@ -22,127 +24,397 @@
     {
       "pitch_type": "FF",
       "pitch_name": "4-Seam Fastball",
-      "pitches": 183917,
-      "share": 31.58
+      "pitches": 1169543,
+      "share": 32.79
     },
     {
       "pitch_type": "SI",
       "pitch_name": "Sinker",
-      "pitches": 90535,
-      "share": 15.55
+      "pitches": 550572,
+      "share": 15.43
     },
     {
       "pitch_type": "SL",
       "pitch_name": "Slider",
-      "pitches": 83550,
-      "share": 14.35
+      "pitches": 550571,
+      "share": 15.43
     },
     {
       "pitch_type": "CH",
       "pitch_name": "Changeup",
-      "pitches": 59150,
-      "share": 10.16
+      "pitches": 382723,
+      "share": 10.73
     },
     {
       "pitch_type": "FC",
       "pitch_name": "Cutter",
-      "pitches": 44751,
-      "share": 7.68
-    },
-    {
-      "pitch_type": "ST",
-      "pitch_name": "Sweeper",
-      "pitches": 44530,
-      "share": 7.65
+      "pitches": 273335,
+      "share": 7.66
     },
     {
       "pitch_type": "CU",
       "pitch_name": "Curveball",
-      "pitches": 38484,
-      "share": 6.61
+      "pitches": 241662,
+      "share": 6.77
+    },
+    {
+      "pitch_type": "ST",
+      "pitch_name": "Sweeper",
+      "pitches": 201354,
+      "share": 5.64
     },
     {
       "pitch_type": "FS",
       "pitch_name": "Split-Finger",
-      "pitches": 18942,
-      "share": 3.25
+      "pitches": 83909,
+      "share": 2.35
     },
     {
       "pitch_type": "KC",
       "pitch_name": "Knuckle Curve",
-      "pitches": 10461,
-      "share": 1.8
+      "pitches": 71772,
+      "share": 2.01
     },
     {
       "pitch_type": "SV",
       "pitch_name": "Slurve",
-      "pitches": 2994,
-      "share": 0.51
+      "pitches": 16456,
+      "share": 0.46
     }
   ],
   "speed_by_pitch": [
     {
       "pitch_type": "FF",
       "pitch_name": "4-Seam Fastball",
-      "pitches": 183915,
-      "avg_speed": 94.47
+      "pitches": 1169532,
+      "avg_speed": 94.1
     },
     {
       "pitch_type": "SI",
       "pitch_name": "Sinker",
-      "pitches": 90534,
-      "avg_speed": 93.77
+      "pitches": 550569,
+      "avg_speed": 93.36
     },
     {
       "pitch_type": "FC",
       "pitch_name": "Cutter",
-      "pitches": 44751,
-      "avg_speed": 89.69
+      "pitches": 273330,
+      "avg_speed": 89.23
     },
     {
       "pitch_type": "FS",
       "pitch_name": "Split-Finger",
-      "pitches": 18942,
-      "avg_speed": 86.49
+      "pitches": 83909,
+      "avg_speed": 86.5
     },
     {
       "pitch_type": "SL",
       "pitch_name": "Slider",
-      "pitches": 83550,
-      "avg_speed": 86.2
+      "pitches": 550562,
+      "avg_speed": 85.49
     },
     {
       "pitch_type": "CH",
       "pitch_name": "Changeup",
-      "pitches": 59150,
-      "avg_speed": 85.82
+      "pitches": 382717,
+      "avg_speed": 85.36
     },
     {
-      "pitch_type": "KC",
-      "pitch_name": "Knuckle Curve",
-      "pitches": 10461,
-      "avg_speed": 82.7
+      "pitch_type": "FO",
+      "pitch_name": "Forkball",
+      "pitches": 1678,
+      "avg_speed": 82.98
     },
     {
       "pitch_type": "ST",
       "pitch_name": "Sweeper",
-      "pitches": 44530,
-      "avg_speed": 82.52
+      "pitches": 201348,
+      "avg_speed": 82.0
     },
     {
       "pitch_type": "SV",
       "pitch_name": "Slurve",
-      "pitches": 2994,
-      "avg_speed": 81.77
+      "pitches": 16456,
+      "avg_speed": 81.96
     },
     {
-      "pitch_type": "CU",
-      "pitch_name": "Curveball",
-      "pitches": 38484,
-      "avg_speed": 79.55
+      "pitch_type": "KC",
+      "pitch_name": "Knuckle Curve",
+      "pitches": 71769,
+      "avg_speed": 81.72
     }
   ],
   "month_summary": [
+    {
+      "month": "2021-04",
+      "pitches": 111894,
+      "avg_speed": 88.68,
+      "strike_rate": 0.47,
+      "batted_balls": 18526,
+      "avg_exit_velocity": 88.31,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2021-05",
+      "pitches": 122217,
+      "avg_speed": 88.89,
+      "strike_rate": 0.47,
+      "batted_balls": 20434,
+      "avg_exit_velocity": 88.11,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2021-06",
+      "pitches": 116550,
+      "avg_speed": 88.92,
+      "strike_rate": 0.47,
+      "batted_balls": 19864,
+      "avg_exit_velocity": 88.27,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2021-07",
+      "pitches": 108667,
+      "avg_speed": 88.86,
+      "strike_rate": 0.46,
+      "batted_balls": 18687,
+      "avg_exit_velocity": 87.85,
+      "hard_hit_rate": 0.38
+    },
+    {
+      "month": "2021-08",
+      "pitches": 121629,
+      "avg_speed": 88.8,
+      "strike_rate": 0.46,
+      "batted_balls": 21011,
+      "avg_exit_velocity": 87.89,
+      "hard_hit_rate": 0.38
+    },
+    {
+      "month": "2021-09",
+      "pitches": 118216,
+      "avg_speed": 88.93,
+      "strike_rate": 0.46,
+      "batted_balls": 20536,
+      "avg_exit_velocity": 87.94,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2021-10",
+      "pitches": 13147,
+      "avg_speed": 88.98,
+      "strike_rate": 0.47,
+      "batted_balls": 2268,
+      "avg_exit_velocity": 88.22,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2022-04",
+      "pitches": 92133,
+      "avg_speed": 88.57,
+      "strike_rate": 0.47,
+      "batted_balls": 15639,
+      "avg_exit_velocity": 88.28,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2022-05",
+      "pitches": 122994,
+      "avg_speed": 88.75,
+      "strike_rate": 0.46,
+      "batted_balls": 21693,
+      "avg_exit_velocity": 88.23,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2022-06",
+      "pitches": 119048,
+      "avg_speed": 88.88,
+      "strike_rate": 0.46,
+      "batted_balls": 20891,
+      "avg_exit_velocity": 88.25,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2022-07",
+      "pitches": 114424,
+      "avg_speed": 89.03,
+      "strike_rate": 0.47,
+      "batted_balls": 19923,
+      "avg_exit_velocity": 88.02,
+      "hard_hit_rate": 0.38
+    },
+    {
+      "month": "2022-08",
+      "pitches": 122558,
+      "avg_speed": 88.98,
+      "strike_rate": 0.47,
+      "batted_balls": 21516,
+      "avg_exit_velocity": 88.01,
+      "hard_hit_rate": 0.38
+    },
+    {
+      "month": "2022-09",
+      "pitches": 116726,
+      "avg_speed": 89.09,
+      "strike_rate": 0.47,
+      "batted_balls": 20269,
+      "avg_exit_velocity": 87.87,
+      "hard_hit_rate": 0.38
+    },
+    {
+      "month": "2022-10",
+      "pitches": 22327,
+      "avg_speed": 88.77,
+      "strike_rate": 0.47,
+      "batted_balls": 3802,
+      "avg_exit_velocity": 87.86,
+      "hard_hit_rate": 0.37
+    },
+    {
+      "month": "2023-03",
+      "pitches": 5981,
+      "avg_speed": 89.55,
+      "strike_rate": 0.47,
+      "batted_balls": 965,
+      "avg_exit_velocity": 88.49,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2023-04",
+      "pitches": 120603,
+      "avg_speed": 88.64,
+      "strike_rate": 0.46,
+      "batted_balls": 20456,
+      "avg_exit_velocity": 88.5,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2023-05",
+      "pitches": 122394,
+      "avg_speed": 89.04,
+      "strike_rate": 0.46,
+      "batted_balls": 21293,
+      "avg_exit_velocity": 88.61,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2023-06",
+      "pitches": 115544,
+      "avg_speed": 89.09,
+      "strike_rate": 0.47,
+      "batted_balls": 19939,
+      "avg_exit_velocity": 88.81,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2023-07",
+      "pitches": 108240,
+      "avg_speed": 89.08,
+      "strike_rate": 0.47,
+      "batted_balls": 18662,
+      "avg_exit_velocity": 88.58,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2023-08",
+      "pitches": 121165,
+      "avg_speed": 89.03,
+      "strike_rate": 0.47,
+      "batted_balls": 21027,
+      "avg_exit_velocity": 88.46,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2023-09",
+      "pitches": 122355,
+      "avg_speed": 89.08,
+      "strike_rate": 0.47,
+      "batted_balls": 20813,
+      "avg_exit_velocity": 88.22,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2023-10",
+      "pitches": 4402,
+      "avg_speed": 89.41,
+      "strike_rate": 0.47,
+      "batted_balls": 733,
+      "avg_exit_velocity": 87.16,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2024-03",
+      "pitches": 16634,
+      "avg_speed": 89.05,
+      "strike_rate": 0.46,
+      "batted_balls": 2827,
+      "avg_exit_velocity": 88.54,
+      "hard_hit_rate": 0.4
+    },
+    {
+      "month": "2024-04",
+      "pitches": 116769,
+      "avg_speed": 88.78,
+      "strike_rate": 0.46,
+      "batted_balls": 20152,
+      "avg_exit_velocity": 88.31,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2024-05",
+      "pitches": 118739,
+      "avg_speed": 89.12,
+      "strike_rate": 0.47,
+      "batted_balls": 20946,
+      "avg_exit_velocity": 88.49,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2024-06",
+      "pitches": 116355,
+      "avg_speed": 89.26,
+      "strike_rate": 0.47,
+      "batted_balls": 20533,
+      "avg_exit_velocity": 88.38,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2024-07",
+      "pitches": 108693,
+      "avg_speed": 89.28,
+      "strike_rate": 0.47,
+      "batted_balls": 18964,
+      "avg_exit_velocity": 88.22,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2024-08",
+      "pitches": 121441,
+      "avg_speed": 89.19,
+      "strike_rate": 0.47,
+      "batted_balls": 21072,
+      "avg_exit_velocity": 88.21,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2024-09",
+      "pitches": 112691,
+      "avg_speed": 89.29,
+      "strike_rate": 0.47,
+      "batted_balls": 19240,
+      "avg_exit_velocity": 88.25,
+      "hard_hit_rate": 0.39
+    },
+    {
+      "month": "2025-03",
+      "pitches": 19786,
+      "avg_speed": 89.33,
+      "strike_rate": 0.46,
+      "batted_balls": 3350,
+      "avg_exit_velocity": 88.83,
+      "hard_hit_rate": 0.41
+    },
     {
       "month": "2025-04",
       "pitches": 114767,
@@ -187,16 +459,25 @@
       "batted_balls": 21651,
       "avg_exit_velocity": 88.61,
       "hard_hit_rate": 0.41
+    },
+    {
+      "month": "2025-09",
+      "pitches": 110338,
+      "avg_speed": 89.55,
+      "strike_rate": 0.47,
+      "batted_balls": 18780,
+      "avg_exit_velocity": 88.81,
+      "hard_hit_rate": 0.41
     }
   ],
   "handedness": [
     {
       "p_throws": "L",
       "stand": "L",
-      "pitches": 47295,
-      "avg_speed": 88.38,
+      "pitches": 273276,
+      "avg_speed": 88.27,
       "strike_rate": 0.47,
-      "plate_appearances": 12278,
+      "plate_appearances": 70625,
       "hit_rate": 0.21,
       "home_run_rate": 0.02,
       "strikeout_rate": 0.24
@@ -204,233 +485,233 @@
     {
       "p_throws": "L",
       "stand": "R",
-      "pitches": 109921,
-      "avg_speed": 87.98,
+      "pitches": 707348,
+      "avg_speed": 87.96,
       "strike_rate": 0.46,
-      "plate_appearances": 28172,
-      "hit_rate": 0.22,
+      "plate_appearances": 181130,
+      "hit_rate": 0.23,
       "home_run_rate": 0.03,
       "strikeout_rate": 0.22
     },
     {
       "p_throws": "R",
       "stand": "L",
-      "pitches": 212222,
-      "avg_speed": 89.69,
-      "strike_rate": 0.45,
-      "plate_appearances": 53753,
+      "pitches": 1226753,
+      "avg_speed": 89.38,
+      "strike_rate": 0.46,
+      "plate_appearances": 309104,
       "hit_rate": 0.22,
       "home_run_rate": 0.03,
-      "strikeout_rate": 0.21
+      "strikeout_rate": 0.22
     },
     {
       "p_throws": "R",
       "stand": "R",
-      "pitches": 212966,
-      "avg_speed": 89.9,
+      "pitches": 1359687,
+      "avg_speed": 89.47,
       "strike_rate": 0.47,
-      "plate_appearances": 55962,
+      "plate_appearances": 353780,
       "hit_rate": 0.22,
       "home_run_rate": 0.03,
-      "strikeout_rate": 0.22
+      "strikeout_rate": 0.23
     }
   ],
   "top_pitchers": [
     {
-      "pitcher": 607074,
-      "pitches": 2640,
-      "avg_speed": 89.59,
-      "player_name": "Carlos Rod\u00f3n"
+      "pitcher": 656302,
+      "pitches": 15590,
+      "avg_speed": 90.26,
+      "player_name": "Dylan Cease"
     },
     {
       "pitcher": 657277,
-      "pitches": 2625,
-      "avg_speed": 88.98,
+      "pitches": 14895,
+      "avg_speed": 88.42,
       "player_name": "Logan Webb"
     },
     {
-      "pitcher": 592662,
-      "pitches": 2617,
-      "avg_speed": 89.35,
-      "player_name": "Robbie Ray"
+      "pitcher": 592332,
+      "pitches": 14855,
+      "avg_speed": 89.92,
+      "player_name": "Kevin Gausman"
     },
     {
-      "pitcher": 579328,
-      "pitches": 2608,
-      "avg_speed": 88.57,
-      "player_name": "Yusei Kikuchi"
+      "pitcher": 622491,
+      "pitches": 14750,
+      "avg_speed": 92.46,
+      "player_name": "Luis Castillo"
     },
     {
-      "pitcher": 676979,
-      "pitches": 2584,
-      "avg_speed": 92.24,
-      "player_name": "Garrett Crochet"
+      "pitcher": 554430,
+      "pitches": 14259,
+      "avg_speed": 92.26,
+      "player_name": "Zack Wheeler"
     },
     {
-      "pitcher": 642547,
-      "pitches": 2577,
-      "avg_speed": 90.18,
-      "player_name": "Freddy Peralta"
+      "pitcher": 605135,
+      "pitches": 14241,
+      "avg_speed": 86.48,
+      "player_name": "Chris Bassitt"
     },
     {
-      "pitcher": 694973,
-      "pitches": 2568,
-      "avg_speed": 92.86,
-      "player_name": "Paul Skenes"
+      "pitcher": 621244,
+      "pitches": 14221,
+      "avg_speed": 89.0,
+      "player_name": "Jos\u00e9 Berr\u00edos"
+    },
+    {
+      "pitcher": 450203,
+      "pitches": 14110,
+      "avg_speed": 88.13,
+      "player_name": "Charlie Morton"
     },
     {
       "pitcher": 668678,
-      "pitches": 2552,
-      "avg_speed": 88.87,
+      "pitches": 13937,
+      "avg_speed": 89.2,
       "player_name": "Zac Gallen"
     },
     {
-      "pitcher": 608331,
-      "pitches": 2516,
-      "avg_speed": 88.21,
-      "player_name": "Max Fried"
-    },
-    {
-      "pitcher": 666200,
-      "pitches": 2514,
-      "avg_speed": 90.94,
-      "player_name": "Jes\u00fas Luzardo"
+      "pitcher": 605400,
+      "pitches": 13871,
+      "avg_speed": 87.01,
+      "player_name": "Aaron Nola"
     }
   ],
   "top_batters": [
     {
-      "batter": 805300,
-      "plate_appearances": 121,
-      "hit_rate": 0.31,
-      "home_runs": 4,
-      "player_name": "Jakob Marsee"
+      "batter": 650333,
+      "plate_appearances": 3049,
+      "hit_rate": 0.29,
+      "home_runs": 32,
+      "player_name": "Luis Arr\u00e1ez"
     },
     {
-      "batter": 609280,
-      "plate_appearances": 286,
-      "hit_rate": 0.3,
-      "home_runs": 9,
-      "player_name": "Miguel And\u00fajar"
+      "batter": 663968,
+      "plate_appearances": 429,
+      "hit_rate": 0.28,
+      "home_runs": 3,
+      "player_name": "Jake Mangum"
     },
     {
       "batter": 805779,
-      "plate_appearances": 414,
-      "hit_rate": 0.29,
-      "home_runs": 11,
+      "plate_appearances": 628,
+      "hit_rate": 0.28,
+      "home_runs": 13,
       "player_name": "Jacob Wilson"
     },
     {
-      "batter": 808975,
-      "plate_appearances": 146,
-      "hit_rate": 0.29,
-      "home_runs": 2,
-      "player_name": "Hyeseong Kim"
-    },
-    {
-      "batter": 666182,
-      "plate_appearances": 584,
+      "batter": 802415,
+      "plate_appearances": 441,
       "hit_rate": 0.28,
-      "home_runs": 16,
-      "player_name": "Bo Bichette"
-    },
-    {
-      "batter": 665161,
-      "plate_appearances": 448,
-      "hit_rate": 0.28,
-      "home_runs": 13,
-      "player_name": "Jeremy Pe\u00f1a"
-    },
-    {
-      "batter": 676694,
-      "plate_appearances": 313,
-      "hit_rate": 0.28,
-      "home_runs": 3,
-      "player_name": "Jake Meyers"
+      "home_runs": 0,
+      "player_name": "Chandler Simpson"
     },
     {
       "batter": 607208,
-      "plate_appearances": 610,
-      "hit_rate": 0.28,
-      "home_runs": 14,
+      "plate_appearances": 3232,
+      "hit_rate": 0.27,
+      "home_runs": 111,
       "player_name": "Trea Turner"
     },
     {
-      "batter": 655316,
-      "plate_appearances": 109,
-      "hit_rate": 0.28,
-      "home_runs": 4,
-      "player_name": "Andruw Monasterio"
+      "batter": 488726,
+      "plate_appearances": 842,
+      "hit_rate": 0.27,
+      "home_runs": 15,
+      "player_name": "Michael Brantley"
     },
     {
-      "batter": 666018,
-      "plate_appearances": 397,
+      "batter": 695734,
+      "plate_appearances": 351,
       "hit_rate": 0.27,
-      "home_runs": 12,
-      "player_name": "Jonathan Aranda"
+      "home_runs": 9,
+      "player_name": "Daylen Lile"
+    },
+    {
+      "batter": 666182,
+      "plate_appearances": 2957,
+      "hit_rate": 0.27,
+      "home_runs": 95,
+      "player_name": "Bo Bichette"
+    },
+    {
+      "batter": 623912,
+      "plate_appearances": 1479,
+      "hit_rate": 0.27,
+      "home_runs": 27,
+      "player_name": "Harold Ram\u00edrez"
+    },
+    {
+      "batter": 669364,
+      "plate_appearances": 1008,
+      "hit_rate": 0.27,
+      "home_runs": 4,
+      "player_name": "Xavier Edwards"
     }
   ],
   "outcomes": [
     {
       "event": "field_out",
-      "count": 61156
+      "count": 365142
     },
     {
       "event": "strikeout",
-      "count": 32840
+      "count": 206040
     },
     {
       "event": "single",
-      "count": 21516
+      "count": 128907
     },
     {
       "event": "walk",
-      "count": 12143
+      "count": 74046
     },
     {
       "event": "double",
-      "count": 6384
+      "count": 39542
     },
     {
       "event": "home_run",
-      "count": 4589
+      "count": 28126
     },
     {
       "event": "force_out",
-      "count": 2712
+      "count": 17993
     },
     {
       "event": "grounded_into_double_play",
-      "count": 2558
+      "count": 16481
     },
     {
       "event": "hit_by_pitch",
-      "count": 1593
+      "count": 10215
     },
     {
       "event": "sac_fly",
-      "count": 1045
+      "count": 6073
     }
   ],
   "exit_velocity_bands": [
     {
       "exit_velocity_band": "0\u201379 mph",
-      "count": 23166
+      "count": 145042
     },
     {
       "exit_velocity_band": "80\u201389 mph",
-      "count": 20434
+      "count": 126539
     },
     {
       "exit_velocity_band": "90\u201394 mph",
-      "count": 14072
+      "count": 85820
     },
     {
       "exit_velocity_band": "95\u201399 mph",
-      "count": 15899
+      "count": 96539
     },
     {
       "exit_velocity_band": "100+ mph",
-      "count": 28751
+      "count": 163193
     }
   ]
 }

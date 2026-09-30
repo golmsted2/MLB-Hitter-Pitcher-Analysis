@@ -99,7 +99,7 @@ function renderExplorer(data) {
   const months = data.month_summary;
   if (!select || !clearButton || !months.length) return;
 
-  select.innerHTML = '<option value="">All five months</option>';
+   select.innerHTML = '<option value="">All months</option>';
   months.forEach((row) => {
     const option = document.createElement("option");
     option.value = row.month;
@@ -118,7 +118,7 @@ function renderExplorer(data) {
   function updateExplorer(value = "") {
     const selected = months.find((row) => row.month === value) || allMonths;
     const selectedIndex = value ? months.findIndex((row) => row.month === value) : -1;
-    const label = value ? formatMonthLabel(value) : "all five months";
+    const label = value ? formatMonthLabel(value) : "all months";
     document.querySelectorAll("[data-explorer-stat]").forEach((element) => {
       const key = element.dataset.explorerStat;
       if (key === "pitches") element.textContent = formatNumber(selected.pitches);
@@ -130,7 +130,7 @@ function renderExplorer(data) {
       "explorer-summary",
       value
         ? `${label} contains ${formatNumber(selected.pitches)} pitches. The charts below use the red highlight to mark this month while the snapshot tracks its speed and contact metrics.`
-        : `The snapshot combines all five months. Choose a month to highlight it in the monthly charts and compare its speed and contact metrics.`,
+       : `The snapshot combines all ${months.length} monthly samples across ${data.headline.seasons} seasons. Choose a month to highlight it in the monthly charts and compare its speed and contact metrics.`,
     );
 
     if (reportCharts.volume) {
@@ -195,7 +195,7 @@ function renderHeadline(data) {
 
   setText(
     "hero-summary",
-    `This report examines ${formatNumber(headline.pitches)} pitch events from ${headline.months} monthly samples in the ${headline.season} season, asking how pitch selection, velocity, handedness, and batted-ball outcomes connect.`,
+     `This report examines ${formatNumber(headline.pitches)} pitch events from ${headline.months} monthly samples across the ${headline.first_season}–${headline.last_season} regular seasons, asking how pitch selection, velocity, handedness, and batted-ball outcomes connect.`,
   );
 }
 
@@ -221,7 +221,7 @@ function renderNarrative(data) {
 
   setText(
     "scale-copy",
-    `The file contains ${formatNumber(h.pitches)} pitches from ${formatNumber(h.pitchers)} pitchers and ${formatNumber(h.batters)} batters. It uses five comparable monthly samples from the ${h.season} season while preserving the event-level detail needed to study individual matchups.`,
+     `The file contains ${formatNumber(h.pitches)} pitches from ${formatNumber(h.pitchers)} pitchers and ${formatNumber(h.batters)} batters. It uses ${h.months} comparable monthly samples across the ${h.first_season}–${h.last_season} regular seasons while preserving the event-level detail needed to study individual matchups.`,
   );
   setText(
     "mix-copy",
@@ -247,7 +247,7 @@ function renderNarrative(data) {
   );
   setText(
     "pitchers-copy",
-    `${topPitcherName} threw the most pitches in this sample: ${formatNumber(topPitcher.pitches)}, or ${(topPitcher.pitches / h.pitches * 100).toFixed(1)}% of all rows. The top ten pitchers are useful for volume comparisons, but pitch count is exposure—not a direct measure of pitching quality.`,
+     `${topPitcherName} threw the most pitches in this sample: ${formatNumber(topPitcher.pitches)}, or ${(topPitcher.pitches / h.pitches * 100).toFixed(1)}% of all rows. The top ten pitchers are useful for volume comparisons across ${h.first_season}–${h.last_season}, but pitch count is exposure—not a direct measure of pitching quality.`,
   );
   setText(
     "batters-copy",
@@ -268,7 +268,7 @@ function renderNarrative(data) {
   setText("season-insight", `Highest hard-hit month: ${formatMonthLabel(highestHardHitMonth.month)} at ${formatPercent(highestHardHitMonth.hard_hit_rate)} of tracked balls in play.`);
   setText("handedness-insight", `Largest matchup cell: P${largestHandGroup.p_throws} / B${largestHandGroup.stand} with ${formatNumber(largestHandGroup.pitches)} pitches.`);
   setText("outcomes-insight", `Most common recorded outcome: ${topOutcome.event.replaceAll("_", " ")} (${formatNumber(topOutcome.count)} completed appearances).`);
-  setText("pitchers-insight", `Volume leader: ${topPitcherName} with ${formatNumber(topPitcher.pitches)} pitches in the five-month window.`);
+  setText("pitchers-insight", `Volume leader: ${topPitcherName} with ${formatNumber(topPitcher.pitches)} pitches across the ${h.first_season}–${h.last_season} window.`);
   setText("batters-insight", `Highest qualifying hit rate: ${topBatterName} at ${formatPercent(topBatter.hit_rate)} across ${formatNumber(topBatter.plate_appearances)} plate appearances.`);
 }
 
@@ -337,8 +337,8 @@ function renderCharts(data) {
 async function loadReport() {
   try {
     const [response, namesResponse] = await Promise.all([
-      fetch("data/report_data.json?v=2", { cache: "no-store" }),
-      fetch("data/player_names.json?v=2", { cache: "no-store" }),
+      fetch("data/report_data.json?v=3", { cache: "no-store" }),
+      fetch("data/player_names.json?v=3", { cache: "no-store" }),
     ]);
     if (!response.ok) throw new Error(`Could not load report data (${response.status})`);
     const data = await response.json();

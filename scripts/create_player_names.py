@@ -15,7 +15,7 @@ NAMES_PATH = PROJECT_ROOT / "data" / "player_names.json"
 
 
 def main() -> None:
-    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
+    data_paths = sorted(DATA_DIR.glob("mlb_statcast_*.csv"))
     if not data_paths:
         raise FileNotFoundError(f"No monthly CSV files found in {DATA_DIR}")
     ids_frame = pd.concat(

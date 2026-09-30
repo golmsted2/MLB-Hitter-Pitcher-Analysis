@@ -28,7 +28,7 @@ STRIKE_DESCRIPTIONS = {
 
 
 def clean_data() -> pd.DataFrame:
-    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
+    data_paths = sorted(DATA_DIR.glob("mlb_statcast_*.csv"))
     if not data_paths:
         raise FileNotFoundError(f"No monthly CSV files found in {DATA_DIR}")
     data = pd.concat(
@@ -151,11 +151,14 @@ def main() -> None:
         labels=["0–79 mph", "80–89 mph", "90–94 mph", "95–99 mph", "100+ mph"],
     )
 
+    seasons = sorted(int(season) for season in data["season"].dropna().unique())
     summary = {
         "headline": {
             "pitches": int(len(data)),
             "months": int(data["month"].nunique()),
-            "season": int(data["season"].mode().iloc[0]),
+            "seasons": len(seasons),
+            "first_season": seasons[0],
+            "last_season": seasons[-1],
             "pitchers": int(data["pitcher"].nunique()),
             "batters": int(data["batter"].nunique()),
             "avg_speed": round(float(data["release_speed"].mean()), 2),

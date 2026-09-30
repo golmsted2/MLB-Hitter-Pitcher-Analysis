@@ -1,5 +1,6 @@
 """Check the local project against the assignment's structural requirements."""
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -7,6 +8,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data" / "months"
+MAX_FILE_BYTES = 25 * 1024 * 1024
 
 
 def main() -> None:
@@ -22,35 +24,50 @@ def main() -> None:
         "README.md",
         "submission.txt",
         "data/report_data.json",
-        "data/months/mlb_statcast_2025_04.csv",
-        "data/months/mlb_statcast_2025_05.csv",
-        "data/months/mlb_statcast_2025_06.csv",
-        "data/months/mlb_statcast_2025_07.csv",
-        "data/months/mlb_statcast_2025_08.csv",
+        "data/data_files.json",
         "data/player_names.json",
         "scripts/analyze_data.py",
         "scripts/create_player_names.py",
+        "scripts/get_statcast_2021_2025.py",
         "scripts/get_statcast_2025_months.py",
         "scripts/make_small_dataset.py",
     ]
     missing = [path for path in required_files if not (ROOT / path).exists()]
     assert not missing, f"Missing files: {missing}"
 
-    data_paths = sorted(DATA_DIR.glob("mlb_statcast_2025_*.csv"))
-    assert len(data_paths) == 5, len(data_paths)
-    data = pd.concat([pd.read_csv(path, low_memory=False) for path in data_paths], ignore_index=True)
-    assert len(data) >= 500_000, len(data)
-    assert len(data.columns) >= 8, len(data.columns)
-    assert data["season"].nunique() == 1, data["season"].nunique()
-    assert data["season"].iloc[0] == 2025, data["season"].iloc[0]
-    assert data["month"].nunique() >= 5, data["month"].nunique()
-    assert data["pitcher"].nunique() >= 10, data["pitcher"].nunique()
-    assert data["batter"].nunique() >= 10, data["batter"].nunique()
-
     categorical = ["pitch_type", "p_throws", "stand", "home_team"]
     numeric = ["release_speed", "launch_speed", "launch_angle", "balls", "strikes"]
-    assert all(column in data.columns for column in categorical)
-    assert all(column in data.columns for column in numeric)
+    required_columns = ["season", "month", "pitcher", "batter", *categorical, *numeric]
+    manifest = json.loads((ROOT / "data" / "data_files.json").read_text(encoding="utf-8"))
+    assert len(manifest) >= 30, len(manifest)
+    data_paths = [ROOT / path for path in manifest]
+    assert all(path.exists() for path in data_paths), "Manifest contains a missing CSV"
+    assert all(path.stat().st_size < MAX_FILE_BYTES for path in data_paths), "A CSV is at least 25 MB"
+
+    total_rows = 0
+    seasons: set[int] = set()
+    months: set[str] = set()
+    pitchers: set[int] = set()
+    batters: set[int] = set()
+    first_columns = None
+    for path in data_paths:
+        header = pd.read_csv(path, nrows=0)
+        if first_columns is None:
+            first_columns = header.columns
+        assert all(column in header.columns for column in required_columns), path.name
+        for chunk in pd.read_csv(path, usecols=required_columns, chunksize=100_000, low_memory=False):
+            total_rows += len(chunk)
+            seasons.update(int(value) for value in chunk["season"].dropna().unique())
+            months.update(str(value) for value in chunk["month"].dropna().unique())
+            pitchers.update(int(value) for value in chunk["pitcher"].dropna().unique())
+            batters.update(int(value) for value in chunk["batter"].dropna().unique())
+
+    assert total_rows >= 3_000_000, total_rows
+    assert len(first_columns) >= 8, len(first_columns)
+    assert seasons == set(range(2021, 2026)), seasons
+    assert len(months) >= 30, len(months)
+    assert len(pitchers) >= 10, len(pitchers)
+    assert len(batters) >= 10, len(batters)
 
     report = (ROOT / "index.html").read_text(encoding="utf-8")
     dashboard = (ROOT / "dashboard.html").read_text(encoding="utf-8")
@@ -89,8 +106,8 @@ def main() -> None:
     assert "description === \"hit_into_play\"" in dashboard_js
 
     print("PASS: project files are present")
-    print(f"PASS: {len(data):,} rows and {len(data.columns)} columns")
-    print(f"PASS: {data['month'].nunique()} months in the {int(data['season'].iloc[0])} season, {data['pitcher'].nunique():,} pitchers, {data['batter'].nunique():,} batters")
+    print(f"PASS: {total_rows:,} rows and {len(first_columns)} columns")
+    print(f"PASS: {len(months)} monthly samples across {len(seasons)} seasons, {len(pitchers):,} pitchers, {len(batters):,} batters")
     print("PASS: report has at least eight charts")
     print("PASS: dashboard has filters, four charts, a table, and reset control")
 

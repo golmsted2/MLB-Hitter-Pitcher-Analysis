@@ -11,13 +11,7 @@ const STRIKE_DESCRIPTIONS = new Set([
 
 const HIT_EVENTS = new Set(["single", "double", "triple", "home_run"]);
 const REPORT_COLORS = ["#246b9c", "#d7473f", "#7fa8c9", "#a52f32", "#d9e8f3", "#eeaaa6", "#173d5b", "#e36f68"];
-const DATA_FILES = [
-  "data/months/mlb_statcast_2025_04.csv",
-  "data/months/mlb_statcast_2025_05.csv",
-  "data/months/mlb_statcast_2025_06.csv",
-  "data/months/mlb_statcast_2025_07.csv",
-  "data/months/mlb_statcast_2025_08.csv",
-];
+let DATA_FILES = [];
 const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
@@ -598,7 +592,7 @@ async function loadDashboardData() {
   const status = document.getElementById("loading-status");
   try {
     try {
-      const namesResponse = await fetch("data/player_names.json?v=2", { cache: "no-store" });
+      const namesResponse = await fetch("data/player_names.json?v=3", { cache: "no-store" });
       if (namesResponse.ok) {
         const names = await namesResponse.json();
         Object.entries(names).forEach(([playerId, name]) => playerNames.set(playerId, name));
@@ -607,11 +601,15 @@ async function loadDashboardData() {
       console.warn("Player names could not be loaded; MLB IDs will be shown.", error);
     }
 
+    const manifestResponse = await fetch("data/data_files.json?v=1", { cache: "no-store" });
+    if (!manifestResponse.ok) throw new Error(`Data manifest request failed (${manifestResponse.status})`);
+    DATA_FILES = await manifestResponse.json();
+    if (!Array.isArray(DATA_FILES) || !DATA_FILES.length) throw new Error("The data manifest contained no CSV files");
     if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
     for (let index = 0; index < DATA_FILES.length; index += 1) {
-      const response = await fetch(`${DATA_FILES[index]}?v=4`, { cache: "no-store" });
+      const response = await fetch(`${DATA_FILES[index]}?v=5`, { cache: "no-store" });
       if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
-      status.textContent = `Loading month ${index + 1} of ${DATA_FILES.length}…`;
+      status.textContent = `Loading data file ${index + 1} of ${DATA_FILES.length}…`;
       const csvText = await response.text();
       const results = Papa.parse(csvText, {
         header: true,

@@ -71,14 +71,16 @@ def main() -> None:
     assert dashboard.count('id="filter-') >= 4
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard
-    assert 'id="player-modal"' in dashboard
-    assert 'id="player-modal-image"' in dashboard
+    assert 'id="selected-matchup-title"' in dashboard
+    assert 'id="selected-pitcher-image"' in dashboard
+    assert 'id="selected-batter-image"' in dashboard
     assert 'id="player-comparison-chart"' in dashboard
     assert 'id="search-pitcher"' in dashboard
     assert 'id="search-batter"' in dashboard
     assert 'id="pitcher-search-results"' in dashboard
     assert 'id="batter-search-results"' in dashboard
-    assert 'id="player-modal-team"' in dashboard
+    assert 'id="selected-pitcher-team"' in dashboard
+    assert 'id="selected-batter-team"' in dashboard
 
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
     assert '"player_name"' in summary_text

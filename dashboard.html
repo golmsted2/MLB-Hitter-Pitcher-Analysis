@@ -144,22 +144,43 @@
         </div>
       </section>
 
-      <div class="player-modal" id="player-modal" hidden aria-hidden="true">
-        <div class="player-modal-backdrop" data-close-player-modal></div>
-        <section class="player-modal-card" role="dialog" aria-modal="true" aria-labelledby="player-modal-name">
-          <button class="player-modal-close" id="close-player-modal" type="button" aria-label="Close player preview">×</button>
-          <div class="player-modal-image-wrap">
-            <img id="player-modal-image" alt="" />
-            <div class="player-modal-placeholder" id="player-modal-placeholder" hidden>Player image unavailable</div>
+      <section class="selected-matchup dashboard-card" aria-labelledby="selected-matchup-title">
+        <div class="compare-heading">
+          <div>
+            <p class="section-kicker">Selected matchup</p>
+            <h2 id="selected-matchup-title">Put the pitcher and batter side by side.</h2>
+            <p class="compare-description">Choose a pitcher and batter above to keep their images, names, IDs, and team details visible while you explore the charts.</p>
           </div>
-          <div class="player-modal-copy">
-            <p class="section-kicker" id="player-modal-role">Selected player</p>
-            <h2 id="player-modal-name">Player name</h2>
-            <div class="player-team-badge" id="player-modal-team" hidden><img class="team-badge-logo" id="player-modal-team-logo" alt="" hidden /><span class="team-badge-mark" id="player-modal-team-mark">MLB</span><span id="player-modal-team-name">Team unavailable</span></div>
-            <p id="player-modal-id">MLB player profile</p>
-          </div>
-        </section>
-      </div>
+          <span class="scorebug scorebug-inline" aria-hidden="true"><span>PITCHER / BATTER</span><strong>LIVE</strong></span>
+        </div>
+        <div class="selected-matchup-grid">
+          <article class="player-profile-card" id="selected-pitcher-card">
+            <div class="player-profile-image-wrap">
+              <img id="selected-pitcher-image" alt="" hidden />
+              <div class="player-profile-placeholder" id="selected-pitcher-placeholder">Choose a pitcher above</div>
+            </div>
+            <div class="player-profile-copy">
+              <p class="section-kicker">Pitcher</p>
+              <h3 id="selected-pitcher-name">No pitcher selected</h3>
+              <div class="player-team-badge" id="selected-pitcher-team" hidden><img class="team-badge-logo" id="selected-pitcher-team-logo" alt="" hidden /><span class="team-badge-mark" id="selected-pitcher-team-mark">MLB</span><span id="selected-pitcher-team-name">Team unavailable</span></div>
+              <p id="selected-pitcher-id">Use the pitcher filter or search box.</p>
+            </div>
+          </article>
+          <div class="matchup-divider" aria-hidden="true"><span>VS</span></div>
+          <article class="player-profile-card" id="selected-batter-card">
+            <div class="player-profile-image-wrap">
+              <img id="selected-batter-image" alt="" hidden />
+              <div class="player-profile-placeholder" id="selected-batter-placeholder">Choose a batter above</div>
+            </div>
+            <div class="player-profile-copy">
+              <p class="section-kicker">Batter</p>
+              <h3 id="selected-batter-name">No batter selected</h3>
+              <div class="player-team-badge" id="selected-batter-team" hidden><img class="team-badge-logo" id="selected-batter-team-logo" alt="" hidden /><span class="team-badge-mark" id="selected-batter-team-mark">MLB</span><span id="selected-batter-team-name">Team unavailable</span></div>
+              <p id="selected-batter-id">Use the batter filter or search box.</p>
+            </div>
+          </article>
+        </div>
+      </section>
 
       <section class="dashboard-content is-loading" id="dashboard-content" aria-live="polite">
         <div class="stat-grid" id="dashboard-stats">
@@ -212,6 +233,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="dashboard.js?v=10"></script>
+    <script src="dashboard.js?v=11"></script>
   </body>
 </html>

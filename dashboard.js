@@ -278,13 +278,13 @@ function playerTeamForRow(row, role) {
   return "";
 }
 
-let playerModalRequest = 0;
+const playerCardRequests = { pitcher: 0, batter: 0 };
 
-function renderTeamBadge(teamInfo) {
-  const teamBadge = document.getElementById("player-modal-team");
-  const teamMark = document.getElementById("player-modal-team-mark");
-  const teamLogo = document.getElementById("player-modal-team-logo");
-  const teamName = document.getElementById("player-modal-team-name");
+function renderTeamBadge(role, teamInfo) {
+  const teamBadge = document.getElementById(`selected-${role}-team`);
+  const teamMark = document.getElementById(`selected-${role}-team-mark`);
+  const teamLogo = document.getElementById(`selected-${role}-team-logo`);
+  const teamName = document.getElementById(`selected-${role}-team-name`);
   const abbreviation = teamInfo?.abbreviation || "";
   teamBadge.hidden = !teamInfo;
   teamName.textContent = teamInfo?.name || "Team unavailable";
@@ -311,40 +311,38 @@ async function fetchPlayerTeamInfo(playerId) {
   }
 }
 
-function closePlayerModal() {
-  const modal = document.getElementById("player-modal");
-  modal.hidden = true;
-  modal.setAttribute("aria-hidden", "true");
-}
+async function updatePlayerCard(role, value) {
+  const requestId = ++playerCardRequests[role];
+  const image = document.getElementById(`selected-${role}-image`);
+  const placeholder = document.getElementById(`selected-${role}-placeholder`);
+  const nameElement = document.getElementById(`selected-${role}-name`);
+  const idElement = document.getElementById(`selected-${role}-id`);
+  if (!value) {
+    nameElement.textContent = `No ${role} selected`;
+    idElement.textContent = `Use the ${role} filter or search box.`;
+    image.hidden = true;
+    placeholder.hidden = false;
+    renderTeamBadge(role, null);
+    return;
+  }
 
-async function showPlayerModal(key, value) {
-  if (!value) return;
-  const requestId = ++playerModalRequest;
-  const modal = document.getElementById("player-modal");
-  const image = document.getElementById("player-modal-image");
-  const placeholder = document.getElementById("player-modal-placeholder");
   const name = playerNames.get(String(value)) || `MLB ID ${value}`;
-  const role = key === "pitcher" ? "Selected pitcher" : "Selected batter";
-  const team = getPlayerTeam(key, value);
-
-  document.getElementById("player-modal-role").textContent = role;
-  document.getElementById("player-modal-name").textContent = name;
-  document.getElementById("player-modal-id").textContent = `MLB ID ${value}`;
-  renderTeamBadge(team ? { abbreviation: team, name: team } : null);
-  image.alt = `${name} headshot`;
+  const team = getPlayerTeam(role, value);
+  nameElement.textContent = name;
+  idElement.textContent = `MLB ID ${value}`;
+  renderTeamBadge(role, team ? { abbreviation: team, name: team } : { name: "Looking up current team…" });
+  image.alt = `${name} ${role} photo`;
   image.hidden = false;
   placeholder.hidden = true;
   image.onerror = () => {
     image.hidden = true;
     placeholder.hidden = false;
+    placeholder.textContent = "Player image unavailable";
   };
   image.src = `https://img.mlbstatic.com/mlb-photos/image/upload/w_320,q_auto:good/v1/people/${value}/headshot/67/current.png`;
-  modal.hidden = false;
-  modal.setAttribute("aria-hidden", "false");
-  document.getElementById("close-player-modal").focus();
   if (!team) {
     const teamInfo = await fetchPlayerTeamInfo(value);
-    if (requestId === playerModalRequest && teamInfo) renderTeamBadge(teamInfo);
+    if (requestId === playerCardRequests[role]) renderTeamBadge(role, teamInfo || { name: "Team unavailable" });
   }
 }
 
@@ -553,6 +551,8 @@ function resetFilters() {
   filterPlayerOptions("filter-batter", "");
   hidePlayerSearchResults("pitcher");
   hidePlayerSearchResults("batter");
+  updatePlayerCard("pitcher", "");
+  updatePlayerCard("batter", "");
   document.getElementById("metric-select").value = "count";
   document.getElementById("breakdown-select").value = "month";
   document.getElementById("compare-role").value = "pitcher";
@@ -577,12 +577,12 @@ function prepareFilters() {
   document.getElementById("filter-pitcher").addEventListener("change", (event) => {
     document.getElementById("search-pitcher").value = event.target.value ? displayValue("pitcher", event.target.value) : "";
     hidePlayerSearchResults("pitcher");
-    showPlayerModal("pitcher", event.target.value);
+    updatePlayerCard("pitcher", event.target.value);
   });
   document.getElementById("filter-batter").addEventListener("change", (event) => {
     document.getElementById("search-batter").value = event.target.value ? displayValue("batter", event.target.value) : "";
     hidePlayerSearchResults("batter");
-    showPlayerModal("batter", event.target.value);
+    updatePlayerCard("batter", event.target.value);
   });
   document.addEventListener("pointerdown", (event) => {
     if (!event.target.closest(".search-field")) {
@@ -590,11 +590,8 @@ function prepareFilters() {
       hidePlayerSearchResults("batter");
     }
   });
-  document.getElementById("close-player-modal").addEventListener("click", closePlayerModal);
-  document.querySelector("[data-close-player-modal]").addEventListener("click", closePlayerModal);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closePlayerModal();
-  });
+  updatePlayerCard("pitcher", document.getElementById("filter-pitcher").value);
+  updatePlayerCard("batter", document.getElementById("filter-batter").value);
 }
 
 async function loadDashboardData() {

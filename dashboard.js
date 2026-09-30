@@ -22,6 +22,7 @@ const allRows = [];
 const charts = {};
 const pitchNameByType = new Map();
 const playerNames = new Map();
+const playerValueCache = new Map();
 const playerTeams = new Map();
 const TEAM_COLORS = {
   AZ: "#a71930", ATL: "#ce1141", BAL: "#df4601", BOS: "#bd3039", CHC: "#0e3386", CWS: "#27251f", CIN: "#c6011f", CLE: "#00385d", COL: "#333366", DET: "#0c2340", HOU: "#002d62", KC: "#004687", LAA: "#ba0021", LAD: "#005a9c", MIA: "#00a3e0", MIL: "#12284b", MIN: "#002b5c", NYM: "#002d72", NYY: "#0c2340", OAK: "#003831", PHI: "#e81828", PIT: "#fdb827", SD: "#2f241d", SEA: "#0c2c56", SF: "#fd5a1e", STL: "#c41e3a", TB: "#092c5c", TEX: "#003278", TOR: "#134a8e", WAS: "#ab0003",
@@ -163,6 +164,97 @@ function filterPlayerOptions(selectId, query) {
       return;
     }
     option.hidden = normalizedQuery && !option.textContent.toLowerCase().includes(normalizedQuery);
+  });
+}
+
+const playerSearchConfig = {
+  pitcher: { inputId: "search-pitcher", resultsId: "pitcher-search-results", selectId: "filter-pitcher", label: "pitchers" },
+  batter: { inputId: "search-batter", resultsId: "batter-search-results", selectId: "filter-batter", label: "batters" },
+};
+
+function uniquePlayerValues(role) {
+  if (!playerValueCache.has(role)) {
+    playerValueCache.set(role, uniqueValues(role).sort((a, b) => displayValue(role, a).localeCompare(displayValue(role, b))));
+  }
+  return playerValueCache.get(role);
+}
+
+function hidePlayerSearchResults(role) {
+  const config = playerSearchConfig[role];
+  const input = document.getElementById(config.inputId);
+  const results = document.getElementById(config.resultsId);
+  results.hidden = true;
+  input.setAttribute("aria-expanded", "false");
+}
+
+function chooseSearchedPlayer(role, value) {
+  const config = playerSearchConfig[role];
+  const input = document.getElementById(config.inputId);
+  const select = document.getElementById(config.selectId);
+  select.value = String(value);
+  input.value = displayValue(role, value);
+  hidePlayerSearchResults(role);
+  select.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+function renderPlayerSearchResults(role) {
+  const config = playerSearchConfig[role];
+  const input = document.getElementById(config.inputId);
+  const results = document.getElementById(config.resultsId);
+  const query = input.value.trim().toLowerCase();
+  results.replaceChildren();
+  if (!query) {
+    hidePlayerSearchResults(role);
+    return;
+  }
+
+  const matches = uniquePlayerValues(role)
+    .filter((value) => displayValue(role, value).toLowerCase().includes(query))
+    .slice(0, 10);
+  if (!matches.length) {
+    const empty = document.createElement("span");
+    empty.className = "player-search-empty";
+    empty.textContent = `No matching ${config.label}`;
+    results.appendChild(empty);
+  } else {
+    matches.forEach((value) => {
+      const button = document.createElement("button");
+      button.className = "player-search-result";
+      button.type = "button";
+      button.dataset.playerValue = String(value);
+      button.setAttribute("role", "option");
+      button.textContent = displayValue(role, value);
+      results.appendChild(button);
+    });
+  }
+  results.hidden = false;
+  input.setAttribute("aria-expanded", "true");
+}
+
+function preparePlayerSearch(role) {
+  const config = playerSearchConfig[role];
+  const input = document.getElementById(config.inputId);
+  const results = document.getElementById(config.resultsId);
+  input.addEventListener("input", () => renderPlayerSearchResults(role));
+  input.addEventListener("focus", () => renderPlayerSearchResults(role));
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      hidePlayerSearchResults(role);
+      return;
+    }
+    if (event.key === "Enter") {
+      const firstMatch = results.querySelector("[data-player-value]");
+      if (firstMatch) {
+        event.preventDefault();
+        chooseSearchedPlayer(role, firstMatch.dataset.playerValue);
+      }
+    }
+  });
+  results.addEventListener("pointerdown", (event) => {
+    const result = event.target.closest("[data-player-value]");
+    if (!result) return;
+    event.preventDefault();
+    chooseSearchedPlayer(role, result.dataset.playerValue);
   });
 }
 
@@ -459,6 +551,8 @@ function resetFilters() {
   document.getElementById("search-batter").value = "";
   filterPlayerOptions("filter-pitcher", "");
   filterPlayerOptions("filter-batter", "");
+  hidePlayerSearchResults("pitcher");
+  hidePlayerSearchResults("batter");
   document.getElementById("metric-select").value = "count";
   document.getElementById("breakdown-select").value = "month";
   document.getElementById("compare-role").value = "pitcher";
@@ -477,11 +571,25 @@ function prepareFilters() {
   populateComparisonPlayers();
   [...document.querySelectorAll("select")].forEach((select) => select.addEventListener("change", updateDashboard));
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
-  document.getElementById("search-pitcher").addEventListener("input", (event) => filterPlayerOptions("filter-pitcher", event.target.value));
-  document.getElementById("search-batter").addEventListener("input", (event) => filterPlayerOptions("filter-batter", event.target.value));
+  preparePlayerSearch("pitcher");
+  preparePlayerSearch("batter");
   document.getElementById("compare-role").addEventListener("change", populateComparisonPlayers);
-  document.getElementById("filter-pitcher").addEventListener("change", (event) => showPlayerModal("pitcher", event.target.value));
-  document.getElementById("filter-batter").addEventListener("change", (event) => showPlayerModal("batter", event.target.value));
+  document.getElementById("filter-pitcher").addEventListener("change", (event) => {
+    document.getElementById("search-pitcher").value = event.target.value ? displayValue("pitcher", event.target.value) : "";
+    hidePlayerSearchResults("pitcher");
+    showPlayerModal("pitcher", event.target.value);
+  });
+  document.getElementById("filter-batter").addEventListener("change", (event) => {
+    document.getElementById("search-batter").value = event.target.value ? displayValue("batter", event.target.value) : "";
+    hidePlayerSearchResults("batter");
+    showPlayerModal("batter", event.target.value);
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!event.target.closest(".search-field")) {
+      hidePlayerSearchResults("pitcher");
+      hidePlayerSearchResults("batter");
+    }
+  });
   document.getElementById("close-player-modal").addEventListener("click", closePlayerModal);
   document.querySelector("[data-close-player-modal]").addEventListener("click", closePlayerModal);
   document.addEventListener("keydown", (event) => {

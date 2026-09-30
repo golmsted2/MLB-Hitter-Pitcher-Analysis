@@ -76,6 +76,8 @@ def main() -> None:
     assert 'id="player-comparison-chart"' in dashboard
     assert 'id="search-pitcher"' in dashboard
     assert 'id="search-batter"' in dashboard
+    assert 'id="pitcher-search-results"' in dashboard
+    assert 'id="batter-search-results"' in dashboard
     assert 'id="player-modal-team"' in dashboard
 
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")

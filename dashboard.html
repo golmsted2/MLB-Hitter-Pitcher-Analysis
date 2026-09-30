@@ -71,15 +71,19 @@
           <label class="control-field">Pitcher
             <select id="filter-pitcher"><option value="">All pitchers</option></select>
           </label>
-          <label class="control-field search-field">Search pitchers
-            <input id="search-pitcher" type="search" placeholder="Type a player name" autocomplete="off" />
-          </label>
+          <div class="control-field search-field">
+            <label for="search-pitcher">Search pitchers</label>
+            <input id="search-pitcher" type="search" placeholder="Type a player name" autocomplete="off" aria-controls="pitcher-search-results" aria-expanded="false" />
+            <div class="player-search-results" id="pitcher-search-results" role="listbox" aria-label="Matching pitchers" hidden></div>
+          </div>
           <label class="control-field">Batter
             <select id="filter-batter"><option value="">All batters</option></select>
           </label>
-          <label class="control-field search-field">Search batters
-            <input id="search-batter" type="search" placeholder="Type a player name" autocomplete="off" />
-          </label>
+          <div class="control-field search-field">
+            <label for="search-batter">Search batters</label>
+            <input id="search-batter" type="search" placeholder="Type a player name" autocomplete="off" aria-controls="batter-search-results" aria-expanded="false" />
+            <div class="player-search-results" id="batter-search-results" role="listbox" aria-label="Matching batters" hidden></div>
+          </div>
         </div>
         <div class="switch-row">
           <label class="control-field switch-field">Measure shown
@@ -208,6 +212,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="dashboard.js?v=9"></script>
+    <script src="dashboard.js?v=10"></script>
   </body>
 </html>

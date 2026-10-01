@@ -99,17 +99,20 @@ a:hover { color: var(--orange); }
 .loading-screen.is-exiting { opacity: 0; visibility: hidden; }
 .loading-screen__scene { height: 170px; position: relative; width: min(330px, 86vw); }
 .loading-screen__scene::after { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); bottom: 25px; content: ""; height: 2px; left: 8%; position: absolute; right: 8%; }
-.loading-screen__batter { animation: loadingBatter 1.85s ease-in-out infinite; bottom: 25px; height: 137px; left: 104px; position: absolute; transform-origin: 50% 100%; width: 94px; z-index: 1; }
+.loading-screen__batter { animation: loadingBatter 1.85s ease-in-out infinite; bottom: 22px; height: 145px; left: 96px; position: absolute; transform-origin: 50% 100%; width: 108px; z-index: 1; }
 .loading-screen__batter i { display: block; position: absolute; }
-.loading-screen__head { background: #f2c3a1; border: 2px solid #102333; border-radius: 50%; height: 23px; left: 41px; top: 2px; width: 23px; z-index: 2; }
-.loading-screen__head::after { background: #102333; border-radius: 50% 50% 35% 35%; content: ""; height: 9px; left: -1px; position: absolute; top: -2px; width: 21px; }
-.loading-screen__torso { background: linear-gradient(135deg, #dcecf3, #5aa0c6 60%, #246b9c); border: 2px solid #102333; border-radius: 43% 48% 25% 35%; height: 59px; left: 34px; top: 24px; transform: rotate(-10deg); width: 39px; }
+.loading-screen__head { background: #f2c3a1; border: 2px solid #102333; border-radius: 50%; height: 25px; left: 38px; top: 1px; transform: rotate(-8deg); width: 25px; z-index: 2; }
+.loading-screen__head::before { background: #102333; border-radius: 70% 55% 0 0; content: ""; height: 9px; left: -2px; position: absolute; top: -3px; width: 25px; }
+.loading-screen__head::after { background: #102333; border-radius: 0 100% 100% 0; content: ""; height: 4px; left: 14px; position: absolute; top: 5px; transform: rotate(7deg); width: 15px; }
+.loading-screen__torso { background: linear-gradient(135deg, #eaf4f7 0%, #8fc2d8 46%, #246b9c 100%); border: 2px solid #102333; border-radius: 43% 48% 23% 32%; height: 64px; left: 31px; top: 25px; transform: rotate(-13deg); width: 43px; }
+.loading-screen__torso::after { background: rgba(255,255,255,0.68); content: ""; height: 4px; left: 7px; position: absolute; top: 27px; transform: rotate(5deg); width: 27px; }
 .loading-screen__arm { background: #f2c3a1; border: 2px solid #102333; border-radius: 999px; height: 10px; transform-origin: 8px 50%; width: 49px; z-index: 3; }
-.loading-screen__arm-back { left: 18px; top: 38px; transform: rotate(-24deg); }
-.loading-screen__arm-front { left: 51px; top: 43px; transform: rotate(23deg); }
-.loading-screen__leg { background: #173d5b; border: 2px solid #102333; border-radius: 9px; bottom: 0; height: 65px; transform-origin: 50% 0; width: 14px; }
-.loading-screen__leg-back { left: 36px; transform: rotate(15deg); }
-.loading-screen__leg-front { left: 61px; transform: rotate(-20deg); }
+.loading-screen__arm-back { left: 23px; top: 42px; transform: rotate(-34deg); }
+.loading-screen__arm-front { left: 49px; top: 45px; transform: rotate(-26deg); }
+.loading-screen__leg { background: linear-gradient(90deg, #102f49, #286486); border: 2px solid #102333; border-radius: 9px; height: 70px; transform-origin: 50% 0; width: 15px; }
+.loading-screen__leg::after { background: #102333; border-radius: 50% 50% 35% 35%; bottom: -7px; content: ""; height: 9px; left: -7px; position: absolute; transform: rotate(-8deg); width: 27px; }
+.loading-screen__leg-back { left: 30px; top: 77px; transform: rotate(18deg); }
+.loading-screen__leg-front { left: 72px; top: 75px; transform: rotate(-23deg); }
 .loading-screen__ball { animation: loadingBall 1.85s cubic-bezier(0.32, 0.04, 0.23, 1) infinite; background: radial-gradient(circle at 32% 28%, #fff, #f4f5ef 70%, #cbd3d1); border: 2px solid #fff; border-radius: 50%; box-shadow: 0 8px 10px rgba(0,0,0,0.3); height: 25px; left: 24px; position: absolute; top: 50px; width: 25px; z-index: 5; }
 .loading-screen__ball::before, .loading-screen__ball::after { border: 2px dashed #d7473f; border-radius: 50%; content: ""; height: 31px; left: -5px; position: absolute; top: -5px; transform: rotate(32deg); width: 17px; }
 .loading-screen__ball::after { transform: rotate(-32deg); }
@@ -128,8 +131,8 @@ a:hover { color: var(--orange); }
   94%, 100% { opacity: 1; transform: translate(150px, 7px) scale(58) rotate(980deg); }
 }
 @keyframes loadingBat {
-  0%, 29% { transform: rotate(-44deg); }
-  43% { transform: rotate(-18deg); }
+  0%, 29% { transform: rotate(-62deg); }
+  43% { transform: rotate(-22deg); }
   53%, 100% { transform: rotate(42deg); }
 }
 @keyframes loadingBatter {

@@ -82,12 +82,16 @@ function formatPercent(value, decimals = 1) {
 }
 
 function chartOptions({ horizontal = false, percentage = false } = {}) {
+  const interaction = horizontal
+    ? { mode: "nearest", axis: "xy", intersect: true }
+    : { mode: "index", axis: "x", intersect: false };
   return {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: horizontal ? "y" : "x",
     animation: { duration: 750, easing: "easeOutQuart" },
-    interaction: { mode: "index", intersect: false },
+    interaction,
+    hover: interaction,
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -96,6 +100,7 @@ function chartOptions({ horizontal = false, percentage = false } = {}) {
         borderWidth: 1,
         cornerRadius: 10,
         padding: 13,
+        position: horizontal ? "nearest" : "average",
         displayColors: false,
         titleFont: { family: "Manrope", size: 12, weight: "700" },
         bodyFont: { family: "DM Mono", size: 11 },

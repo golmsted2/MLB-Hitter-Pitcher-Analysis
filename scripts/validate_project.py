@@ -16,6 +16,7 @@ def main() -> None:
         "index.html",
         "dashboard.html",
         "styles.css",
+        "loading-screen.js",
         "theme.js",
         "assets/mlb-pitcher-action.jpg",
         "assets/mlb-hitter-action.jpg",
@@ -80,6 +81,8 @@ def main() -> None:
     assert 'id="back-to-top"' in report
     assert 'id="theme-toggle"' in report
     assert 'id="theme-toggle"' in dashboard
+    assert 'id="loading-screen"' in report
+    assert 'id="loading-screen"' in dashboard
     assert 'src="theme.js"' in report
     assert 'src="theme.js"' in dashboard
     assert dashboard.count("<canvas") >= 4

@@ -109,11 +109,14 @@ def main() -> None:
     summary_text = (ROOT / "data" / "report_data.json").read_text(encoding="utf-8")
     assert '"player_name"' in summary_text
     dashboard_js = (ROOT / "dashboard.js").read_text(encoding="utf-8")
+    report_js = (ROOT / "report.js").read_text(encoding="utf-8")
     assert "avg_exit_velocity: mean(battedBallRows, \"launch_speed\")" in dashboard_js
     assert "description === \"hit_into_play\"" in dashboard_js
     assert "function downloadFilteredData" in dashboard_js
     assert "function applyUrlState" in dashboard_js
     assert "function updateDirectMatchup" in dashboard_js
+    assert "reportDepthPlugin" in report_js
+    assert "borderRadius: 8" in report_js
 
     print("PASS: project files are present")
     print(f"PASS: {total_rows:,} rows and {len(first_columns)} columns")

@@ -12,6 +12,67 @@ const reportCharts = {};
 
 const numberFormat = new Intl.NumberFormat("en-US");
 
+function shadeColor(color, amount = -0.22) {
+  if (!color || !color.startsWith("#")) return color || REPORT_COLORS.navy;
+  const hex = color.length === 4 ? color.slice(1).split("").map((value) => value + value).join("") : color.slice(1);
+  const channels = [0, 2, 4].map((index) => parseInt(hex.slice(index, index + 2), 16));
+  const shaded = channels.map((channel) => Math.max(0, Math.min(255, Math.round(channel + 255 * amount))));
+  return `#${shaded.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
+
+const reportDepthPlugin = {
+  id: "reportDepth",
+  beforeDatasetDraw(chart, args) {
+    if (args.meta.type !== "bar") return;
+    const dataset = chart.data.datasets[args.index];
+    const { ctx } = chart;
+    const depth = 6;
+    ctx.save();
+    args.meta.data.forEach((element, index) => {
+      const props = element.getProps(["x", "y", "base", "width", "height"], true);
+      const rawColor = Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[index] : dataset.backgroundColor;
+      ctx.fillStyle = shadeColor(rawColor, -0.24);
+      ctx.beginPath();
+      if (chart.options.indexAxis === "y") {
+        const left = Math.min(props.x, props.base);
+        const right = Math.max(props.x, props.base);
+        const top = props.y - props.height / 2;
+        const bottom = props.y + props.height / 2;
+        ctx.moveTo(left, bottom);
+        ctx.lineTo(right, bottom);
+        ctx.lineTo(right + depth, bottom - depth);
+        ctx.lineTo(left + depth, bottom - depth);
+      } else {
+        const left = props.x - props.width / 2;
+        const right = props.x + props.width / 2;
+        const top = Math.min(props.y, props.base);
+        const bottom = Math.max(props.y, props.base);
+        ctx.moveTo(right, top);
+        ctx.lineTo(right + depth, top - depth);
+        ctx.lineTo(right + depth, bottom - depth);
+        ctx.lineTo(right, bottom);
+      }
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.restore();
+  },
+  afterDatasetDraw(chart, args) {
+    if (args.meta.type !== "line") return;
+    const dataset = chart.data.datasets[args.index];
+    const line = args.meta.dataset;
+    if (!line) return;
+    const { ctx } = chart;
+    ctx.save();
+    ctx.globalAlpha = 0.22;
+    ctx.shadowColor = dataset.borderColor;
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 7;
+    line.draw(ctx);
+    ctx.restore();
+  },
+};
+
 function formatNumber(value) {
   return numberFormat.format(Math.round(value));
 }
@@ -25,23 +86,31 @@ function chartOptions({ horizontal = false, percentage = false } = {}) {
     responsive: true,
     maintainAspectRatio: false,
     indexAxis: horizontal ? "y" : "x",
+    animation: { duration: 750, easing: "easeOutQuart" },
+    interaction: { mode: "index", intersect: false },
     plugins: {
       legend: { display: false },
       tooltip: {
         backgroundColor: REPORT_COLORS.navy,
-        padding: 12,
+        borderColor: "rgba(255,255,255,0.18)",
+        borderWidth: 1,
+        cornerRadius: 10,
+        padding: 13,
         displayColors: false,
+        titleFont: { family: "Manrope", size: 12, weight: "700" },
+        bodyFont: { family: "DM Mono", size: 11 },
         callbacks: percentage ? { label: (context) => `${context.dataset.label}: ${context.raw.toFixed(1)}%` } : {},
       },
     },
     scales: {
-      x: { grid: { display: false }, ticks: { color: REPORT_COLORS.text, font: { family: "DM Mono" } } },
+      x: { grid: { color: REPORT_COLORS.grid, borderDash: [4, 5], drawBorder: false }, ticks: { color: REPORT_COLORS.text, font: { family: "DM Mono" }, padding: 7 } },
       y: {
         beginAtZero: true,
-        grid: { color: REPORT_COLORS.grid },
+        grid: { color: REPORT_COLORS.grid, borderDash: [4, 5], drawBorder: false },
         ticks: {
           color: REPORT_COLORS.text,
           font: { family: "DM Mono" },
+          padding: 7,
           callback: percentage ? (value) => `${value}%` : undefined,
         },
       },
@@ -52,7 +121,7 @@ function chartOptions({ horizontal = false, percentage = false } = {}) {
 function makeChart(id, config) {
   const canvas = document.getElementById(id);
   if (!canvas) return;
-  return new Chart(canvas, config);
+  return new Chart(canvas, { ...config, plugins: [...(config.plugins || []), reportDepthPlugin] });
 }
 
 function themeColor(name, fallback) {
@@ -283,27 +352,27 @@ function renderCharts(data) {
 
   reportCharts.volume = makeChart("season-volume-chart", {
     type: "bar",
-    data: { labels: months.map((row) => row.month), datasets: [{ label: "Pitches", data: months.map((row) => row.pitches), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
+    data: { labels: months.map((row) => row.month), datasets: [{ label: "Pitches", data: months.map((row) => row.pitches), backgroundColor: months.map((_, index) => index % 2 ? REPORT_COLORS.blue : REPORT_COLORS.pale), borderColor: shadeColor(REPORT_COLORS.blue, -0.2), borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.red }] },
     options: chartOptions(),
   });
 
   reportCharts.mix = makeChart("pitch-mix-chart", {
     type: "bar",
-    data: { labels: mix.map((row) => row.pitch_name), datasets: [{ label: "Share of pitches", data: mix.map((row) => row.share), backgroundColor: REPORT_COLORS.red, borderRadius: 5 }] },
+    data: { labels: mix.map((row) => row.pitch_name), datasets: [{ label: "Share of pitches", data: mix.map((row) => row.share), backgroundColor: mix.map((_, index) => index % 2 ? REPORT_COLORS.red : REPORT_COLORS.redPale), borderColor: shadeColor(REPORT_COLORS.red, -0.2), borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.navy }] },
     options: { ...chartOptions({ horizontal: true, percentage: true }), scales: { x: { beginAtZero: true, max: 36, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value}%` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text, font: { family: "DM Mono" } } } } },
   });
 
   reportCharts.speed = makeChart("pitch-speed-chart", {
     type: "bar",
-    data: { labels: speed.map((row) => row.pitch_name), datasets: [{ label: "Average speed", data: speed.map((row) => row.avg_speed), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
+    data: { labels: speed.map((row) => row.pitch_name), datasets: [{ label: "Average speed", data: speed.map((row) => row.avg_speed), backgroundColor: speed.map((_, index) => index % 2 ? REPORT_COLORS.blue : REPORT_COLORS.pale), borderColor: shadeColor(REPORT_COLORS.blue, -0.2), borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.red }] },
     options: { ...chartOptions({ horizontal: true }), scales: { x: { beginAtZero: true, suggestedMax: 100, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value} mph` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } } } },
   });
 
   reportCharts.metrics = makeChart("season-metrics-chart", {
     type: "line",
     data: { labels: months.map((row) => row.month), datasets: [
-      { label: "Average pitch speed", data: months.map((row) => row.avg_speed), borderColor: REPORT_COLORS.blue, backgroundColor: REPORT_COLORS.blue, tension: 0.3, yAxisID: "y" },
-      { label: "Average exit velocity", data: months.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.red, backgroundColor: REPORT_COLORS.red, tension: 0.3, yAxisID: "y1" },
+      { label: "Average pitch speed", data: months.map((row) => row.avg_speed), borderColor: REPORT_COLORS.blue, backgroundColor: "rgba(36,107,156,0.14)", fill: "origin", borderWidth: 3, pointRadius: 3, pointHoverRadius: 7, pointBorderWidth: 2, pointBorderColor: "#fff", tension: 0.3, yAxisID: "y" },
+      { label: "Average exit velocity", data: months.map((row) => row.avg_exit_velocity), borderColor: REPORT_COLORS.red, backgroundColor: "rgba(215,71,63,0.14)", fill: "origin", borderWidth: 3, pointRadius: 3, pointHoverRadius: 7, pointBorderWidth: 2, pointBorderColor: "#fff", tension: 0.3, yAxisID: "y1" },
     ] },
     options: { ...chartOptions(), plugins: { legend: { display: true, labels: { usePointStyle: true, color: REPORT_COLORS.text } } }, scales: { x: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } }, y: { position: "left", grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.blue } }, y1: { position: "right", grid: { drawOnChartArea: false }, ticks: { color: REPORT_COLORS.red } } } },
   });
@@ -311,25 +380,25 @@ function renderCharts(data) {
   const handLabels = hands.map((row) => `P${row.p_throws} / B${row.stand}`);
   reportCharts.handedness = makeChart("handedness-chart", {
     type: "bar",
-    data: { labels: handLabels, datasets: [{ label: "Pitches", data: hands.map((row) => row.pitches), backgroundColor: [REPORT_COLORS.pale, REPORT_COLORS.redPale, REPORT_COLORS.blue, REPORT_COLORS.red], borderRadius: 5 }] },
+    data: { labels: handLabels, datasets: [{ label: "Pitches", data: hands.map((row) => row.pitches), backgroundColor: [REPORT_COLORS.pale, REPORT_COLORS.redPale, REPORT_COLORS.blue, REPORT_COLORS.red], borderColor: REPORT_COLORS.navy, borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.red }] },
     options: chartOptions(),
   });
 
   reportCharts.outcomes = makeChart("outcomes-chart", {
     type: "bar",
-    data: { labels: outcomes.map((row) => row.event.replaceAll("_", " ")), datasets: [{ label: "Completed appearances", data: outcomes.map((row) => row.count), backgroundColor: REPORT_COLORS.blue, borderRadius: 5 }] },
+    data: { labels: outcomes.map((row) => row.event.replaceAll("_", " ")), datasets: [{ label: "Completed appearances", data: outcomes.map((row) => row.count), backgroundColor: outcomes.map((_, index) => index % 2 ? REPORT_COLORS.blue : REPORT_COLORS.pale), borderColor: shadeColor(REPORT_COLORS.blue, -0.2), borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.red }] },
     options: chartOptions({ horizontal: true }),
   });
 
   reportCharts.pitchers = makeChart("top-pitchers-chart", {
     type: "bar",
-    data: { labels: pitchers.map((row) => row.player_name || `MLB ID ${row.pitcher}`), datasets: [{ label: "Pitches", data: pitchers.map((row) => row.pitches), backgroundColor: REPORT_COLORS.navy, borderRadius: 5 }] },
+    data: { labels: pitchers.map((row) => row.player_name || `MLB ID ${row.pitcher}`), datasets: [{ label: "Pitches", data: pitchers.map((row) => row.pitches), backgroundColor: pitchers.map((_, index) => index % 2 ? REPORT_COLORS.navy : REPORT_COLORS.blue), borderColor: REPORT_COLORS.navy, borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.red }] },
     options: chartOptions({ horizontal: true }),
   });
 
   reportCharts.batters = makeChart("top-batters-chart", {
     type: "bar",
-    data: { labels: batters.map((row) => row.player_name || `MLB ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: REPORT_COLORS.red, borderRadius: 5 }] },
+    data: { labels: batters.map((row) => row.player_name || `MLB ID ${row.batter}`), datasets: [{ label: "Hit rate", data: batters.map((row) => row.hit_rate * 100), backgroundColor: batters.map((_, index) => index % 2 ? REPORT_COLORS.red : REPORT_COLORS.redPale), borderColor: REPORT_COLORS.red, borderWidth: 1, borderRadius: 8, borderSkipped: false, hoverBackgroundColor: REPORT_COLORS.navy }] },
     options: { ...chartOptions({ horizontal: true, percentage: true }), scales: { x: { beginAtZero: true, max: 35, grid: { color: REPORT_COLORS.grid }, ticks: { color: REPORT_COLORS.text, callback: (value) => `${value}%` } }, y: { grid: { display: false }, ticks: { color: REPORT_COLORS.text } } } },
   });
 }

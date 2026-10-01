@@ -21,6 +21,9 @@ const playerTeams = new Map();
 const TEAM_COLORS = {
   AZ: "#a71930", ATL: "#ce1141", BAL: "#df4601", BOS: "#bd3039", CHC: "#0e3386", CWS: "#27251f", CIN: "#c6011f", CLE: "#00385d", COL: "#333366", DET: "#0c2340", HOU: "#002d62", KC: "#004687", LAA: "#ba0021", LAD: "#005a9c", MIA: "#00a3e0", MIL: "#12284b", MIN: "#002b5c", NYM: "#002d72", NYY: "#0c2340", OAK: "#003831", PHI: "#e81828", PIT: "#fdb827", SD: "#2f241d", SEA: "#0c2c56", SF: "#fd5a1e", STL: "#c41e3a", TB: "#092c5c", TEX: "#003278", TOR: "#134a8e", WAS: "#ab0003",
 };
+const TEAM_INFO = {
+  AZ: { id: 109, name: "Arizona Diamondbacks" }, ATL: { id: 144, name: "Atlanta Braves" }, BAL: { id: 110, name: "Baltimore Orioles" }, BOS: { id: 111, name: "Boston Red Sox" }, CHC: { id: 112, name: "Chicago Cubs" }, CWS: { id: 145, name: "Chicago White Sox" }, CIN: { id: 113, name: "Cincinnati Reds" }, CLE: { id: 114, name: "Cleveland Guardians" }, COL: { id: 115, name: "Colorado Rockies" }, DET: { id: 116, name: "Detroit Tigers" }, HOU: { id: 117, name: "Houston Astros" }, KC: { id: 118, name: "Kansas City Royals" }, LAA: { id: 108, name: "Los Angeles Angels" }, LAD: { id: 119, name: "Los Angeles Dodgers" }, MIA: { id: 146, name: "Miami Marlins" }, MIL: { id: 158, name: "Milwaukee Brewers" }, MIN: { id: 142, name: "Minnesota Twins" }, NYM: { id: 121, name: "New York Mets" }, NYY: { id: 147, name: "New York Yankees" }, OAK: { id: 133, name: "Athletics" }, PHI: { id: 143, name: "Philadelphia Phillies" }, PIT: { id: 134, name: "Pittsburgh Pirates" }, SD: { id: 135, name: "San Diego Padres" }, SEA: { id: 136, name: "Seattle Mariners" }, SF: { id: 137, name: "San Francisco Giants" }, STL: { id: 138, name: "St. Louis Cardinals" }, TB: { id: 139, name: "Tampa Bay Rays" }, TEX: { id: 140, name: "Texas Rangers" }, TOR: { id: 141, name: "Toronto Blue Jays" }, WAS: { id: 120, name: "Washington Nationals" },
+};
 
 const filterKeys = [
   ["filter-season", "season"],
@@ -28,6 +31,7 @@ const filterKeys = [
   ["filter-pitch-type", "pitch_type"],
   ["filter-p-throws", "p_throws"],
   ["filter-stand", "stand"],
+  ["filter-event", "event_group"],
   ["filter-pitcher", "pitcher"],
   ["filter-batter", "batter"],
 ];
@@ -43,16 +47,25 @@ const breakdownLabels = {
 };
 
 const metricDefinitions = {
-  count: { label: "Pitch count", shortLabel: "Pitches", format: (value) => formatNumber(value) },
-  pitches: { label: "Pitch count", shortLabel: "Pitches", format: (value) => formatNumber(value) },
-  avg_speed: { label: "Average pitch speed", shortLabel: "Avg speed", format: (value) => `${value.toFixed(2)} mph` },
-  avg_exit_velocity: { label: "Average exit velocity", shortLabel: "Avg exit velocity", format: (value) => `${value.toFixed(2)} mph` },
-  strike_rate: { label: "Strike rate", shortLabel: "Strike rate", format: (value) => `${(value * 100).toFixed(1)}%` },
-  hard_hit_rate: { label: "Hard-hit rate", shortLabel: "Hard-hit rate", format: (value) => `${(value * 100).toFixed(1)}%` },
+  count: { label: "Pitch count", shortLabel: "Pitches", description: "the number of pitch-level rows remaining after the current filters", format: (value) => formatNumber(value) },
+  pitches: { label: "Pitch count", shortLabel: "Pitches", description: "the number of pitch-level rows remaining after the current filters", format: (value) => formatNumber(value) },
+  avg_speed: { label: "Average pitch speed", shortLabel: "Avg speed", description: "the mean non-missing release speed across the filtered pitches", format: (value) => `${value.toFixed(2)} mph` },
+  avg_exit_velocity: { label: "Average exit velocity", shortLabel: "Avg exit velocity", description: "the mean launch speed only for pitches recorded as hit into play with a launch-speed value", format: (value) => `${value.toFixed(2)} mph` },
+  strike_rate: { label: "Strike rate", shortLabel: "Strike rate", description: "the share of filtered pitches whose Statcast description is a called or swinging strike event", format: (value) => `${(value * 100).toFixed(1)}%` },
+  hard_hit_rate: { label: "Hard-hit rate", shortLabel: "Hard-hit rate", description: "the share of batted balls with launch speed of at least 95 mph", format: (value) => `${(value * 100).toFixed(1)}%` },
 };
 
 function formatNumber(value) {
   return Number.isFinite(value) ? new Intl.NumberFormat("en-US").format(Math.round(value)) : "—";
+}
+
+function setLoadingProgress(completed, total) {
+  const progress = document.getElementById("loading-progress");
+  const bar = document.getElementById("loading-progress-bar");
+  if (!progress || !bar) return;
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+  progress.setAttribute("aria-valuenow", String(percent));
+  bar.style.width = `${percent}%`;
 }
 
 function themeColor(name, fallback) {
@@ -99,6 +112,16 @@ function isBattedBall(row) {
   return row.description === "hit_into_play" && isFiniteNumber(row.launch_speed);
 }
 
+function eventGroup(row) {
+  if (row.description !== "hit_into_play") return "";
+  return HIT_EVENTS.has(row.events) ? row.events : "other_batted_ball";
+}
+
+function prettyEvent(value) {
+  if (!value) return "Other ball in play";
+  return String(value).replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 function aggregateRows(rows) {
   const battedBallRows = rows.filter(isBattedBall);
   return {
@@ -128,6 +151,7 @@ function displayValue(key, value) {
   if (key === "pitch_type") return pitchNameByType.get(String(value)) ? `${value} — ${pitchNameByType.get(String(value))}` : value;
   if (key === "p_throws") return `${value === "R" ? "Right" : "Left"} (${value})`;
   if (key === "stand") return `${value === "R" ? "Right" : "Left"} (${value})`;
+  if (key === "event_group") return prettyEvent(value);
   if (key === "pitcher" || key === "batter") return playerNames.get(String(value)) || `MLB ID ${value}`;
   return value;
 }
@@ -275,21 +299,22 @@ function playerTeamForRow(row, role) {
 const playerCardRequests = { pitcher: 0, batter: 0 };
 
 function renderTeamBadge(role, teamInfo) {
+  const details = typeof teamInfo === "string" ? { abbreviation: teamInfo, ...(TEAM_INFO[teamInfo] || {}) } : teamInfo;
   const teamBadge = document.getElementById(`selected-${role}-team`);
   const teamMark = document.getElementById(`selected-${role}-team-mark`);
   const teamLogo = document.getElementById(`selected-${role}-team-logo`);
   const teamName = document.getElementById(`selected-${role}-team-name`);
-  const abbreviation = teamInfo?.abbreviation || "";
-  teamBadge.hidden = !teamInfo;
-  teamName.textContent = teamInfo?.name || "Team unavailable";
+  const abbreviation = details?.abbreviation || "";
+  teamBadge.hidden = !details;
+  teamName.textContent = details?.name || "Team unavailable";
   teamMark.textContent = abbreviation || "MLB";
   teamMark.style.backgroundColor = TEAM_COLORS[abbreviation] || "#246b9c";
-  teamMark.hidden = Boolean(teamInfo?.id);
-  teamLogo.hidden = !teamInfo?.id;
-  teamLogo.alt = teamInfo?.name ? `${teamInfo.name} logo` : "";
-  if (teamInfo?.id) {
+  teamMark.hidden = Boolean(details?.id);
+  teamLogo.hidden = !details?.id;
+  teamLogo.alt = details?.name ? `${details.name} logo` : "";
+  if (details?.id) {
     teamLogo.onerror = () => { teamLogo.hidden = true; teamMark.hidden = false; };
-    teamLogo.src = `https://www.mlbstatic.com/team-logos/${teamInfo.id}.svg`;
+    teamLogo.src = `https://www.mlbstatic.com/team-logos/${details.id}.svg`;
   }
 }
 
@@ -324,7 +349,7 @@ async function updatePlayerCard(role, value) {
   const team = getPlayerTeam(role, value);
   nameElement.textContent = name;
   idElement.textContent = `MLB ID ${value}`;
-  renderTeamBadge(role, team ? { abbreviation: team, name: team } : { name: "Looking up current team…" });
+  renderTeamBadge(role, team || { name: "Looking up current team…" });
   image.alt = `${name} ${role} photo`;
   image.hidden = false;
   placeholder.hidden = true;
@@ -342,6 +367,51 @@ async function updatePlayerCard(role, value) {
 
 function currentFilters() {
   return Object.fromEntries(filterKeys.map(([id, key]) => [key, document.getElementById(id).value]));
+}
+
+function applyUrlState() {
+  const params = new URLSearchParams(window.location.search);
+  const metric = params.get("metric");
+  const breakdown = params.get("breakdown");
+  if (metric && metricDefinitions[metric]) document.getElementById("metric-select").value = metric;
+  const breakdownSelect = document.getElementById("breakdown-select");
+  if (breakdown && [...breakdownSelect.options].some((option) => option.value === breakdown)) breakdownSelect.value = breakdown;
+  filterKeys.forEach(([id, key]) => {
+    const value = params.get(key);
+    const select = document.getElementById(id);
+    if (value && [...select.options].some((option) => option.value === value)) select.value = value;
+  });
+  document.getElementById("search-pitcher").value = document.getElementById("filter-pitcher").value ? displayValue("pitcher", document.getElementById("filter-pitcher").value) : "";
+  document.getElementById("search-batter").value = document.getElementById("filter-batter").value ? displayValue("batter", document.getElementById("filter-batter").value) : "";
+}
+
+const EXPORT_COLUMNS = [
+  ["game_date", "Game date"], ["game_year", "Game year"], ["game_type", "Game type"], ["season", "Season"], ["month", "Month"],
+  ["pitcher", "Pitcher MLB ID"], ["batter", "Batter MLB ID"], ["pitch_type", "Pitch type"], ["pitch_name", "Pitch name"],
+  ["events", "Events"], ["event_group", "Hit type filter group"], ["description", "Description"], ["stand", "Batter stance"],
+  ["p_throws", "Pitcher hand"], ["home_team", "Home team"], ["away_team", "Away team"], ["release_speed", "Release speed"],
+  ["launch_speed", "Exit velocity"], ["launch_angle", "Launch angle"], ["hc_x", "Hit coordinate x"], ["hc_y", "Hit coordinate y"],
+  ["bb_type", "Batted-ball type"], ["balls", "Balls"], ["strikes", "Strikes"],
+];
+
+function csvCell(value) {
+  const text = value === null || value === undefined ? "" : String(value);
+  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
+
+function downloadFilteredData() {
+  const rows = filteredRows();
+  if (!rows.length) return;
+  const csv = [EXPORT_COLUMNS.map(([, label]) => label).join(","), ...rows.map((row) => EXPORT_COLUMNS.map(([key]) => csvCell(row[key])).join(","))].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `mlb-statcast-filtered-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function comparisonRows() {
@@ -463,12 +533,48 @@ function replaceChart(name, canvasId, config) {
 
 function updateStats(rows) {
   const summary = aggregateRows(rows);
+  const battedBallCount = rows.filter(isBattedBall).length;
   document.getElementById("stat-pitches").textContent = formatNumber(rows.length);
   document.getElementById("stat-pitchers").textContent = new Set(rows.map((row) => row.pitcher)).size.toLocaleString("en-US");
   document.getElementById("stat-batters").textContent = new Set(rows.map((row) => row.batter)).size.toLocaleString("en-US");
   document.getElementById("stat-speed").textContent = metricFormat(summary.avg_speed, "avg_speed");
   document.getElementById("stat-exit").textContent = metricFormat(summary.avg_exit_velocity, "avg_exit_velocity");
   document.getElementById("stat-hard-hit").textContent = metricFormat(summary.hard_hit_rate, "hard_hit_rate");
+  document.getElementById("stat-exit-note").textContent = `${formatNumber(battedBallCount)} batted balls with launch speed`;
+  document.getElementById("stat-hard-hit-note").textContent = `${formatNumber(battedBallCount)} batted balls in denominator`;
+  document.getElementById("metric-help").textContent = metricDefinitions[document.getElementById("metric-select").value].description;
+  const downloadButton = document.getElementById("download-filtered");
+  const downloadNote = document.getElementById("download-note");
+  downloadButton.disabled = !rows.length;
+  downloadNote.textContent = rows.length ? `Download ${formatNumber(rows.length)} filtered pitch-level rows as a CSV.` : "No filtered rows are available to download.";
+}
+
+function updateDirectMatchup(rows) {
+  const pitcher = document.getElementById("filter-pitcher").value;
+  const batter = document.getElementById("filter-batter").value;
+  const note = document.getElementById("direct-matchup-note");
+  const values = {
+    pitches: document.getElementById("direct-pitches"),
+    plate_appearances: document.getElementById("direct-plate-appearances"),
+    avg_speed: document.getElementById("direct-speed"),
+    avg_exit_velocity: document.getElementById("direct-exit"),
+    strike_rate: document.getElementById("direct-strike-rate"),
+    hard_hit_rate: document.getElementById("direct-hard-hit"),
+  };
+  if (!pitcher || !batter) {
+    Object.values(values).forEach((element) => { element.textContent = "—"; });
+    note.textContent = "Choose both players to see their head-to-head sample.";
+    return;
+  }
+  const directRows = rows.filter((row) => String(row.pitcher) === pitcher && String(row.batter) === batter);
+  const summary = aggregateRows(directRows);
+  values.pitches.textContent = formatNumber(summary.pitches);
+  values.plate_appearances.textContent = formatNumber(summary.plate_appearances);
+  values.avg_speed.textContent = metricFormat(summary.avg_speed, "avg_speed");
+  values.avg_exit_velocity.textContent = metricFormat(summary.avg_exit_velocity, "avg_exit_velocity");
+  values.strike_rate.textContent = metricFormat(summary.strike_rate, "strike_rate");
+  values.hard_hit_rate.textContent = metricFormat(summary.hard_hit_rate, "hard_hit_rate");
+  note.textContent = `${formatNumber(directRows.length)} pitches · ${formatNumber(directRows.filter(isBattedBall).length)} batted balls with launch data · ${displayValue("pitcher", pitcher)} vs ${displayValue("batter", batter)}`;
 }
 
 function updateComparison(rows, metric, breakdown) {
@@ -485,6 +591,7 @@ function updateComparison(rows, metric, breakdown) {
     options: { ...chartOptions(horizontal, percentageAxis), scales: { x: { beginAtZero: horizontal, grid: { display: !horizontal }, ticks: { color: "#667085", maxRotation: 45, minRotation: groups.length > 10 ? 45 : 0, callback: horizontal && percentageAxis ? (value) => `${value * 100}%` : undefined } }, y: { beginAtZero: !horizontal, grid: { color: "#e5e9e7" }, ticks: { color: "#667085", callback: !horizontal && percentageAxis ? (value) => `${value * 100}%` : undefined } } } },
   });
   updateTable(groups, metric);
+  document.getElementById("comparison-note").textContent = `${formatNumber(rows.length)} pitches · ${groups.length} ${breakdownLabels[breakdown].toLowerCase()} groups · ${metricDefinitions[metric].description}.`;
 }
 
 function updateTrend(rows, metric) {
@@ -495,6 +602,7 @@ function updateTrend(rows, metric) {
     data: { labels: groups.map((group) => group.label), datasets: [{ label: metricDefinitions[metric].label, data: groups.map((group) => getMetricValue(group, metric)), borderColor: "#246b9c", backgroundColor: "#246b9c", tension: 0.3 }] },
     options: { ...chartOptions(false, percentageAxis), scales: { x: { grid: { display: false }, ticks: { color: "#667085" } }, y: { beginAtZero: percentageAxis, grid: { color: "#e5e9e7" }, ticks: { color: "#667085", callback: percentageAxis ? (value) => `${value * 100}%` : undefined } } } },
   });
+  document.getElementById("trend-note").textContent = `${formatNumber(rows.length)} filtered pitches across ${groups.length} monthly samples · ${metricDefinitions[metric].description}.`;
 }
 
 function updateMix(rows) {
@@ -504,6 +612,7 @@ function updateMix(rows) {
     data: { labels: groups.map((group) => group.label), datasets: [{ data: groups.map((group) => group.pitches), backgroundColor: REPORT_COLORS, borderWidth: 2, borderColor: "#ffffff" }] },
     options: { responsive: true, maintainAspectRatio: false, cutout: "60%", plugins: { legend: { position: "right", labels: { color: "#667085", boxWidth: 12, font: { family: "Manrope", size: 11 } } }, tooltip: { backgroundColor: "#15283d", padding: 12, displayColors: false, callbacks: { label: (context) => `${formatNumber(context.raw)} pitches` } } } },
   });
+  document.getElementById("mix-note").textContent = `${formatNumber(rows.length)} filtered pitches · ${groups.length} pitch types shown.`;
 }
 
 function updateOutcomes(rows) {
@@ -515,6 +624,7 @@ function updateOutcomes(rows) {
     data: { labels: groups.map((group) => group.event.replaceAll("_", " ")), datasets: [{ label: "Appearances", data: groups.map((group) => group.count), backgroundColor: "#246b9c", borderRadius: 5 }] },
     options: { ...chartOptions(true), plugins: { legend: { display: false }, tooltip: { backgroundColor: "#15283d", padding: 12, displayColors: false, callbacks: { label: (context) => `${formatNumber(context.raw)} appearances` } } } },
   });
+  document.getElementById("outcomes-note").textContent = `${formatNumber(rows.filter((row) => row.events).length)} completed plate appearances with recorded outcomes · top ${groups.length} shown.`;
 }
 
 function updateTable(groups, metric) {
@@ -525,9 +635,56 @@ function updateTable(groups, metric) {
 }
 
 let sprayRows = [];
+let sprayPointPixels = [];
 
 function sprayColor(name, fallback) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function hideSprayTooltip() {
+  const tooltip = document.getElementById("spray-tooltip");
+  if (tooltip) tooltip.hidden = true;
+}
+
+function showSprayTooltip(point, x, y) {
+  const tooltip = document.getElementById("spray-tooltip");
+  if (!tooltip) return;
+  tooltip.replaceChildren();
+  const title = document.createElement("strong");
+  title.textContent = prettyEvent(point.row.events);
+  const details = document.createElement("span");
+  const batterName = displayValue("batter", point.row.batter);
+  const exitVelocity = isFiniteNumber(point.row.launch_speed) ? `${Number(point.row.launch_speed).toFixed(1)} mph exit velocity` : "Exit velocity unavailable";
+  const launchAngle = isFiniteNumber(point.row.launch_angle) ? `${Number(point.row.launch_angle).toFixed(1)}° launch angle` : "Launch angle unavailable";
+  details.textContent = `${batterName} · ${exitVelocity} · ${launchAngle}`;
+  tooltip.append(title, details);
+  tooltip.hidden = false;
+  const wrapper = tooltip.parentElement;
+  const maxLeft = Math.max(8, wrapper.clientWidth - tooltip.offsetWidth - 8);
+  tooltip.style.left = `${Math.min(Math.max(x + 14, 8), maxLeft)}px`;
+  tooltip.style.top = `${Math.max(8, Math.min(y - tooltip.offsetHeight - 12, wrapper.clientHeight - tooltip.offsetHeight - 8))}px`;
+}
+
+function prepareSprayTooltip() {
+  const canvas = document.getElementById("spray-chart");
+  if (!canvas) return;
+  canvas.addEventListener("pointermove", (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    let nearest = null;
+    let nearestDistance = Infinity;
+    sprayPointPixels.forEach((point) => {
+      const distance = Math.hypot(point.x - x, point.y - y);
+      if (distance < nearestDistance) {
+        nearest = point;
+        nearestDistance = distance;
+      }
+    });
+    if (nearest && nearestDistance <= 13) showSprayTooltip(nearest, x, y);
+    else hideSprayTooltip();
+  });
+  canvas.addEventListener("pointerleave", hideSprayTooltip);
 }
 
 function drawSprayChart(rows) {
@@ -539,6 +696,7 @@ function drawSprayChart(rows) {
   const points = trackedBalls.filter((row) => isFiniteNumber(row.hc_x) && isFiniteNumber(row.hc_y));
   const plotStep = Math.max(1, Math.ceil(points.length / 6000));
   const plotPoints = points.filter((_, index) => index % plotStep === 0);
+  sprayPointPixels = [];
   note.textContent = points.length ? `${formatNumber(points.length)} balls in play with location data · ${formatNumber(trackedBalls.length)} tracked batted balls${plotStep > 1 ? ` · showing ${formatNumber(plotPoints.length)} points` : ""}` : "No batted-ball location data matches these filters.";
 
   const width = Math.max(canvas.parentElement.clientWidth, 320);
@@ -603,8 +761,10 @@ function drawSprayChart(rows) {
 
   plotPoints.forEach((row) => {
     const isHit = HIT_EVENTS.has(row.events);
+    const point = { x: mapX(Number(row.hc_x)), y: mapY(Number(row.hc_y)), row };
+    sprayPointPixels.push(point);
     context.beginPath();
-    context.arc(mapX(Number(row.hc_x)), mapY(Number(row.hc_y)), 3.5, 0, Math.PI * 2);
+    context.arc(point.x, point.y, 3.5, 0, Math.PI * 2);
     context.fillStyle = isHit ? sprayColor("--spray-hit", "#d7473f") : sprayColor("--spray-out", "#246b9c");
     context.globalAlpha = 0.68;
     context.fill();
@@ -619,6 +779,7 @@ function updateDashboard() {
   const metric = document.getElementById("metric-select").value;
   const breakdown = document.getElementById("breakdown-select").value;
   updateStats(rows);
+  updateDirectMatchup(rows);
   drawSprayChart(rows);
   updateComparison(rows, metric, breakdown);
   updateTrend(rows, metric);
@@ -641,6 +802,7 @@ function resetFilters() {
   document.getElementById("metric-select").value = "count";
   document.getElementById("breakdown-select").value = "month";
   document.getElementById("compare-role").value = "pitcher";
+  document.getElementById("download-note").textContent = "The download will contain the currently filtered pitch-level rows.";
   populateComparisonPlayers();
   updateDashboard();
 }
@@ -656,6 +818,7 @@ function prepareFilters() {
   populateComparisonPlayers();
   [...document.querySelectorAll("select")].forEach((select) => select.addEventListener("change", updateDashboard));
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
+  document.getElementById("download-filtered").addEventListener("click", downloadFilteredData);
   preparePlayerSearch("pitcher");
   preparePlayerSearch("batter");
   document.getElementById("compare-role").addEventListener("change", populateComparisonPlayers);
@@ -675,6 +838,7 @@ function prepareFilters() {
       hidePlayerSearchResults("batter");
     }
   });
+  applyUrlState();
   updatePlayerCard("pitcher", document.getElementById("filter-pitcher").value);
   updatePlayerCard("batter", document.getElementById("filter-batter").value);
 }
@@ -682,6 +846,8 @@ function prepareFilters() {
 async function loadDashboardData() {
   const status = document.getElementById("loading-status");
   try {
+    prepareSprayTooltip();
+    setLoadingProgress(0, 1);
     try {
       const namesResponse = await fetch("data/player_names.json?v=3", { cache: "no-store" });
       if (namesResponse.ok) {
@@ -698,9 +864,9 @@ async function loadDashboardData() {
     if (!Array.isArray(DATA_FILES) || !DATA_FILES.length) throw new Error("The data manifest contained no CSV files");
     if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
     for (let index = 0; index < DATA_FILES.length; index += 1) {
+      status.textContent = `Loading data file ${index + 1} of ${DATA_FILES.length}…`;
       const response = await fetch(`${DATA_FILES[index]}?v=6`, { cache: "no-store" });
       if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
-      status.textContent = `Loading data file ${index + 1} of ${DATA_FILES.length}…`;
       const csvText = await response.text();
       const results = Papa.parse(csvText, {
         header: true,
@@ -712,6 +878,8 @@ async function loadDashboardData() {
         if (!row.game_date || row.pitcher === null || row.batter === null) return;
         const normalizedRow = {
           game_date: row.game_date,
+          game_year: row.game_year,
+          game_type: row.game_type,
           season: row.season,
           month: row.month,
           pitcher: row.pitcher,
@@ -727,26 +895,35 @@ async function loadDashboardData() {
           inning_topbot: row.inning_topbot,
           release_speed: row.release_speed,
           launch_speed: row.launch_speed,
+          launch_angle: row.launch_angle,
           hc_x: row.hc_x,
           hc_y: row.hc_y,
+          bb_type: row.bb_type,
+          balls: row.balls,
+          strikes: row.strikes,
         };
+        normalizedRow.event_group = eventGroup(normalizedRow);
         allRows.push(normalizedRow);
         recordPlayerTeam("pitcher", normalizedRow.pitcher, playerTeamForRow(normalizedRow, "pitcher"));
         recordPlayerTeam("batter", normalizedRow.batter, playerTeamForRow(normalizedRow, "batter"));
         if (row.pitch_type && row.pitch_name) pitchNameByType.set(String(row.pitch_type), row.pitch_name);
       });
+      setLoadingProgress(index + 1, DATA_FILES.length);
     }
     if (!allRows.length) throw new Error("The CSV loaded but contained no usable rows");
     prepareFilters();
     status.textContent = `${formatNumber(allRows.length)} rows loaded · calculations are live`;
+    setLoadingProgress(DATA_FILES.length, DATA_FILES.length);
     status.classList.add("ready");
     document.getElementById("dashboard-content").classList.remove("is-loading");
+    document.getElementById("dashboard-content").setAttribute("aria-busy", "false");
     updateDashboard();
   } catch (error) {
     console.error(error);
     status.textContent = "The dashboard data could not be loaded. Please refresh the GitHub Pages site.";
     status.classList.add("error");
     document.getElementById("dashboard-content").classList.remove("is-loading");
+    document.getElementById("dashboard-content").setAttribute("aria-busy", "false");
   }
 }
 

@@ -263,9 +263,9 @@ function renderNarrative(data) {
   const highestHardHitMonth = months.reduce((best, row) => row.hard_hit_rate > best.hard_hit_rate ? row : best, months[0]);
   const topOutcome = [...outcomes].sort((a, b) => b.count - a.count)[0];
   setText("scale-insight", `Highest volume: ${formatMonthLabel(busiestMonth.month)} with ${formatNumber(busiestMonth.pitches)} pitches.`);
-  setText("mix-insight", `Most common pitch: ${mix[0].pitch_name}, accounting for ${mix[0].share.toFixed(1)}% of all pitches.`);
-  setText("speed-insight", `Fastest qualifying pitch: ${fastest.pitch_name} at ${fastest.avg_speed.toFixed(2)} mph on average.`);
-  setText("season-insight", `Highest hard-hit month: ${formatMonthLabel(highestHardHitMonth.month)} at ${formatPercent(highestHardHitMonth.hard_hit_rate)} of tracked balls in play.`);
+  setText("mix-insight", `Most common pitch: ${mix[0].pitch_name}, accounting for ${mix[0].share.toFixed(1)}% of ${formatNumber(h.pitches)} pitches (${formatNumber(mix[0].pitches)} observations).`);
+  setText("speed-insight", `Fastest qualifying pitch: ${fastest.pitch_name} at ${fastest.avg_speed.toFixed(2)} mph on average (${formatNumber(fastest.pitches)} non-missing speed observations).`);
+  setText("season-insight", `Highest hard-hit month: ${formatMonthLabel(highestHardHitMonth.month)} at ${formatPercent(highestHardHitMonth.hard_hit_rate)} of ${formatNumber(highestHardHitMonth.batted_balls)} tracked balls in play.`);
   setText("handedness-insight", `Largest matchup cell: P${largestHandGroup.p_throws} / B${largestHandGroup.stand} with ${formatNumber(largestHandGroup.pitches)} pitches.`);
   setText("outcomes-insight", `Most common recorded outcome: ${topOutcome.event.replaceAll("_", " ")} (${formatNumber(topOutcome.count)} completed appearances).`);
   setText("pitchers-insight", `Volume leader: ${topPitcherName} with ${formatNumber(topPitcher.pitches)} pitches across the ${h.first_season}–${h.last_season} window.`);

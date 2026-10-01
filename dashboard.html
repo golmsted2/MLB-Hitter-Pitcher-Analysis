@@ -36,7 +36,8 @@
           Filter five full regular seasons from 2021 through 2025, change the measure, and see the comparison update in your
           browser. Every number below is calculated from the pitch-level CSV loaded on this page.
         </p>
-        <div class="loading-status" id="loading-status" role="status">Loading Statcast data…</div>
+        <div class="loading-status" id="loading-status" role="status" aria-live="polite">Loading Statcast data…</div>
+        <div class="loading-progress" id="loading-progress" role="progressbar" aria-label="Loading Statcast files" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="loading-progress-bar"></span></div>
         <div class="dashboard-hero-art">
           <img src="assets/mlb-hitter-action.jpg" alt="Aaron Judge batting during a professional MLB game" />
           <span>Aaron Judge · MLB game action</span>
@@ -50,7 +51,10 @@
             <p class="section-kicker">Controls</p>
             <h2>Shape the question</h2>
           </div>
-          <button class="button button-ghost" id="reset-filters" type="button">Reset all filters</button>
+          <div class="control-actions">
+            <button class="button button-ghost" id="download-filtered" type="button" disabled>Download filtered data</button>
+            <button class="button button-ghost" id="reset-filters" type="button">Reset all filters</button>
+          </div>
         </div>
         <div class="filter-grid">
           <label class="control-field">Season
@@ -67,6 +71,16 @@
           </label>
           <label class="control-field">Batter stance
             <select id="filter-stand"><option value="">All batter stances</option></select>
+          </label>
+          <label class="control-field">Hit type
+            <select id="filter-event">
+              <option value="">All pitches</option>
+              <option value="single">Singles</option>
+              <option value="double">Doubles</option>
+              <option value="triple">Triples</option>
+              <option value="home_run">Home runs</option>
+              <option value="other_batted_ball">Other balls in play / outs</option>
+            </select>
           </label>
           <label class="control-field">Pitcher
             <select id="filter-pitcher"><option value="">All pitchers</option></select>
@@ -87,7 +101,7 @@
         </div>
         <div class="switch-row">
           <label class="control-field switch-field">Measure shown
-            <select id="metric-select">
+            <select id="metric-select" aria-describedby="metric-help">
               <option value="count">Pitch count</option>
               <option value="avg_speed">Average pitch speed</option>
               <option value="avg_exit_velocity">Average exit velocity</option>
@@ -107,6 +121,8 @@
             </select>
           </label>
         </div>
+        <p class="metric-help" id="metric-help" aria-live="polite">Pitch count is the number of pitch-level rows remaining after the current filters.</p>
+        <p class="download-note" id="download-note" aria-live="polite">The download will contain the currently filtered pitch-level rows.</p>
       </section>
 
       <section class="selected-matchup dashboard-card" aria-labelledby="selected-matchup-title">
@@ -145,6 +161,20 @@
             </div>
           </article>
         </div>
+        <div class="direct-matchup" id="direct-matchup" aria-live="polite">
+          <div class="direct-matchup-heading">
+            <div><p class="section-kicker">Direct results</p><h3>Pitcher versus batter</h3></div>
+            <span class="table-note" id="direct-matchup-note">Choose both players to see their head-to-head sample.</span>
+          </div>
+          <div class="direct-matchup-stats">
+            <div><span>Pitches</span><strong id="direct-pitches">—</strong></div>
+            <div><span>Plate appearances</span><strong id="direct-plate-appearances">—</strong></div>
+            <div><span>Avg pitch speed</span><strong id="direct-speed">—</strong></div>
+            <div><span>Avg exit velocity</span><strong id="direct-exit">—</strong></div>
+            <div><span>Strike rate</span><strong id="direct-strike-rate">—</strong></div>
+            <div><span>Hard-hit rate</span><strong id="direct-hard-hit">—</strong></div>
+          </div>
+        </div>
       </section>
 
       <section class="spray-chart-card dashboard-card" aria-labelledby="spray-chart-title">
@@ -156,36 +186,40 @@
           <div class="spray-legend" aria-label="Spray chart legend"><span><i class="spray-dot spray-hit-dot"></i>Hits</span><span><i class="spray-dot spray-out-dot"></i>Other outs</span></div>
         </div>
         <p class="spray-chart-description">This field view uses Statcast contact coordinates and updates with the filters above. Select a batter to focus on one hitter’s spray profile.</p>
-        <div class="spray-chart-wrap"><canvas id="spray-chart" aria-label="Spray chart of filtered balls in play"></canvas></div>
-        <p class="table-note" id="spray-chart-note">Loading batted-ball locations…</p>
+        <div class="spray-chart-wrap"><canvas id="spray-chart" aria-label="Spray chart of filtered balls in play"></canvas><div class="spray-tooltip" id="spray-tooltip" role="status" hidden></div></div>
+        <p class="table-note" id="spray-chart-note" aria-live="polite">Loading batted-ball locations…</p>
       </section>
 
-      <section class="dashboard-content is-loading" id="dashboard-content" aria-live="polite">
+      <section class="dashboard-content is-loading" id="dashboard-content" aria-live="polite" aria-busy="true">
         <div class="stat-grid" id="dashboard-stats">
-          <div class="stat-card"><span class="card-label">Visible pitches</span><strong id="stat-pitches">—</strong></div>
-          <div class="stat-card"><span class="card-label">Pitchers</span><strong id="stat-pitchers">—</strong></div>
-          <div class="stat-card"><span class="card-label">Batters</span><strong id="stat-batters">—</strong></div>
-          <div class="stat-card"><span class="card-label">Average speed</span><strong id="stat-speed">—</strong></div>
-          <div class="stat-card"><span class="card-label">Average exit velocity</span><strong id="stat-exit">—</strong></div>
-          <div class="stat-card"><span class="card-label">Hard-hit rate</span><strong id="stat-hard-hit">—</strong></div>
+          <div class="stat-card"><span class="card-label">Visible pitches</span><strong id="stat-pitches">—</strong><span class="stat-note">rows after filters</span></div>
+          <div class="stat-card"><span class="card-label">Pitchers</span><strong id="stat-pitchers">—</strong><span class="stat-note">unique IDs in view</span></div>
+          <div class="stat-card"><span class="card-label">Batters</span><strong id="stat-batters">—</strong><span class="stat-note">unique IDs in view</span></div>
+          <div class="stat-card"><span class="card-label">Average speed</span><strong id="stat-speed">—</strong><span class="stat-note">non-missing release speed</span></div>
+          <div class="stat-card"><span class="card-label">Average exit velocity</span><strong id="stat-exit">—</strong><span class="stat-note" id="stat-exit-note">hit-into-play pitches with launch speed</span></div>
+          <div class="stat-card"><span class="card-label">Hard-hit rate</span><strong id="stat-hard-hit">—</strong><span class="stat-note" id="stat-hard-hit-note">95+ mph among batted balls</span></div>
         </div>
 
         <div class="dashboard-chart-grid">
           <section class="dashboard-card chart-card wide-card">
             <div class="chart-card-heading"><div><p class="section-kicker">Comparison</p><h2 id="comparison-title">Pitch count by month</h2></div><span class="live-dot">Live</span></div>
             <div class="dashboard-chart-wrap"><canvas id="comparison-chart" aria-label="Selected metric by selected breakdown"></canvas></div>
+            <p class="chart-note" id="comparison-note">Loading comparison sample…</p>
           </section>
           <section class="dashboard-card chart-card">
             <div class="chart-card-heading"><div><p class="section-kicker">Trend</p><h2>Monthly trend</h2></div></div>
             <div class="dashboard-chart-wrap"><canvas id="trend-chart" aria-label="Monthly trend"></canvas></div>
+            <p class="chart-note" id="trend-note">Loading trend sample…</p>
           </section>
           <section class="dashboard-card chart-card">
             <div class="chart-card-heading"><div><p class="section-kicker">Pitch mix</p><h2>Types in view</h2></div></div>
             <div class="dashboard-chart-wrap"><canvas id="mix-chart" aria-label="Pitch types in current view"></canvas></div>
+            <p class="chart-note" id="mix-note">Loading pitch mix sample…</p>
           </section>
           <section class="dashboard-card chart-card wide-card">
             <div class="chart-card-heading"><div><p class="section-kicker">Plate appearances</p><h2>Recorded outcomes</h2></div></div>
             <div class="dashboard-chart-wrap"><canvas id="outcomes-chart" aria-label="Recorded outcomes in current view"></canvas></div>
+            <p class="chart-note" id="outcomes-note">Loading outcome sample…</p>
           </section>
         </div>
 
@@ -196,7 +230,8 @@
           </div>
           <div class="table-scroll">
             <table>
-              <thead><tr><th>Breakdown</th><th>Pitches</th><th>Avg speed</th><th>Avg exit velocity</th><th>Strike rate</th><th>Hard-hit rate</th><th>Plate appearances</th></tr></thead>
+              <caption class="sr-only">Numbers behind the currently filtered dashboard view</caption>
+              <thead><tr><th scope="col">Breakdown</th><th scope="col">Pitches</th><th scope="col">Avg speed</th><th scope="col">Avg exit velocity</th><th scope="col">Strike rate</th><th scope="col">Hard-hit rate</th><th scope="col">Plate appearances</th></tr></thead>
               <tbody id="summary-table"><tr><td colspan="7">Loading…</td></tr></tbody>
             </table>
           </div>
@@ -208,7 +243,7 @@
           <div>
             <p class="section-kicker">Player matchup</p>
             <h2 id="player-comparison-title">Compare two players.</h2>
-            <p class="compare-description">The comparison respects the season, month, pitch, and handedness filters above while keeping both player choices open.</p>
+            <p class="compare-description">The comparison respects the season, month, pitch, handedness, and hit-type filters above. For direct pitcher-versus-batter results, use the Selected Matchup section above.</p>
           </div>
           <span class="scorebug scorebug-inline" aria-hidden="true"><span>HEAD TO HEAD</span><strong>LIVE</strong></span>
         </div>
@@ -246,6 +281,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="dashboard.js?v=13"></script>
+    <script src="dashboard.js?v=14"></script>
   </body>
 </html>

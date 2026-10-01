@@ -35,7 +35,7 @@ def main() -> None:
     missing = [path for path in required_files if not (ROOT / path).exists()]
     assert not missing, f"Missing files: {missing}"
 
-    categorical = ["pitch_type", "p_throws", "stand", "home_team"]
+    categorical = ["pitch_type", "p_throws", "stand", "home_team", "bb_type"]
     numeric = ["release_speed", "launch_speed", "launch_angle", "hc_x", "hc_y", "balls", "strikes"]
     required_columns = ["season", "month", "pitcher", "batter", *categorical, *numeric]
     manifest = json.loads((ROOT / "data" / "data_files.json").read_text(encoding="utf-8"))
@@ -89,6 +89,12 @@ def main() -> None:
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard
     assert 'id="spray-chart"' in dashboard
+    assert 'id="spray-tooltip"' in dashboard
+    assert 'id="filter-event"' in dashboard
+    assert 'id="download-filtered"' in dashboard
+    assert 'id="loading-progress"' in dashboard
+    assert 'id="direct-matchup"' in dashboard
+    assert dashboard.count('class="chart-note"') >= 4
     assert 'id="selected-matchup-title"' in dashboard
     assert 'id="selected-pitcher-image"' in dashboard
     assert 'id="selected-batter-image"' in dashboard
@@ -105,6 +111,9 @@ def main() -> None:
     dashboard_js = (ROOT / "dashboard.js").read_text(encoding="utf-8")
     assert "avg_exit_velocity: mean(battedBallRows, \"launch_speed\")" in dashboard_js
     assert "description === \"hit_into_play\"" in dashboard_js
+    assert "function downloadFilteredData" in dashboard_js
+    assert "function applyUrlState" in dashboard_js
+    assert "function updateDirectMatchup" in dashboard_js
 
     print("PASS: project files are present")
     print(f"PASS: {total_rows:,} rows and {len(first_columns)} columns")

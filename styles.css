@@ -115,9 +115,7 @@ a:hover { color: var(--orange); }
 .loading-screen__base-left { left: -6px; top: calc(50% - 6px); }
 .loading-screen__base-second { left: calc(50% - 6px); top: -6px; }
 .loading-screen__base-right { right: -6px; top: calc(50% - 6px); }
-.loading-screen__ball { animation: loadingBaseball 1.85s cubic-bezier(0.32, 0.04, 0.23, 1) infinite; background: radial-gradient(circle at 32% 28%, #fff, #f4f5ef 70%, #cbd3d1); border: 2px solid #fff; border-radius: 50%; box-shadow: 0 8px 10px rgba(0,0,0,0.3), 0 0 18px rgba(255,255,255,0.28); height: 27px; left: 50%; position: absolute; top: 52px; transform-origin: 50% 50%; width: 27px; z-index: 5; }
-.loading-screen__ball::before, .loading-screen__ball::after { border: 2px dashed #d7473f; border-radius: 50%; content: ""; height: 34px; left: -5px; position: absolute; top: -5px; transform: rotate(32deg); width: 18px; }
-.loading-screen__ball::after { transform: rotate(-32deg); }
+.loading-screen__ball { animation: loadingBaseball 1.85s cubic-bezier(0.32, 0.04, 0.23, 1) infinite; background: url("assets/loading-baseball.png") center / contain no-repeat; filter: drop-shadow(0 7px 6px rgba(0,0,0,0.34)); height: 48px; left: 50%; position: absolute; top: 52px; transform-origin: 50% 50%; width: 48px; z-index: 5; }
 .loading-screen__title { font-size: 1.05rem; letter-spacing: 0.03em; margin-top: -4px; }
 .loading-screen__caption { color: #a9c7d8; font: 500 0.64rem "DM Mono", monospace; letter-spacing: 0.16em; margin-top: 8px; text-transform: uppercase; }
 .loading-screen__meter { background: rgba(255,255,255,0.18); border-radius: 999px; display: block; height: 3px; margin-top: 16px; overflow: hidden; width: 160px; }

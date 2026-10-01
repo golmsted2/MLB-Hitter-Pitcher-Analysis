@@ -10,6 +10,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 - `loading-screen.js` controls the shared stadium broadcast loading transition used by both pages.
 - `theme.js` controls the shared light/dark mode switch and remembers the selected theme in the browser.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.
+- `assets/loading-baseball.png` is the photorealistic baseball used in the loading-screen pitch animation.
 - `assets/loading-stadium.png` is the realistic night-stadium backdrop used by the loading screen.
 - `assets/mlb-pitcher-action.jpg` and `assets/mlb-hitter-action.jpg` are official MLB game-action images used in the report and dashboard artwork. They are stored locally so the published site does not depend on remote image loading.
 - `report.js` loads `data/report_data.json`, fills the report prose, and creates the eight report charts.

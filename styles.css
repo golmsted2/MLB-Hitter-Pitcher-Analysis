@@ -94,8 +94,8 @@ body {
 a { color: var(--blue-dark); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--orange); }
 
-.loading-screen { align-items: center; background: radial-gradient(circle at 50% 42%, #244f6d 0, #15283d 42%, #091520 100%); color: #fff; display: flex; flex-direction: column; inset: 0; justify-content: center; overflow: hidden; position: fixed; text-align: center; transition: opacity 500ms ease, visibility 500ms ease; z-index: 1000; }
-.loading-screen::before { background: repeating-linear-gradient(90deg, transparent 0 48px, rgba(255,255,255,0.045) 49px 50px), repeating-linear-gradient(0deg, transparent 0 48px, rgba(255,255,255,0.045) 49px 50px); content: ""; inset: 0; opacity: 0.4; pointer-events: none; position: absolute; transform: perspective(420px) rotateX(58deg) scale(1.35) translateY(24%); transform-origin: center bottom; }
+.loading-screen { align-items: center; background-color: #091520; background-image: linear-gradient(180deg, rgba(5,14,26,0.2) 0%, rgba(5,14,26,0.24) 44%, rgba(4,10,16,0.86) 100%), url("assets/loading-stadium.png"); background-position: center; background-size: cover; color: #fff; display: flex; flex-direction: column; inset: 0; justify-content: center; overflow: hidden; position: fixed; text-align: center; transition: opacity 500ms ease, visibility 500ms ease; z-index: 1000; }
+.loading-screen::before { background: radial-gradient(ellipse at center, transparent 38%, rgba(2,8,15,0.5) 100%); content: ""; inset: 0; opacity: 0.72; pointer-events: none; position: absolute; }
 .loading-screen.is-exiting { opacity: 0; visibility: hidden; }
 .loading-screen__scene { height: 250px; position: relative; width: min(480px, 90vw); }
 .loading-screen__scene::after { background: radial-gradient(ellipse at center, rgba(62,151,108,0.75), rgba(22,72,62,0.18) 62%, transparent 70%); border-radius: 50%; bottom: 3px; content: ""; height: 116px; left: 7%; position: absolute; right: 7%; transform: perspective(300px) rotateX(57deg); }

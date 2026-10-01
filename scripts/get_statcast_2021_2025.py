@@ -44,6 +44,9 @@ SOURCE_COLUMNS = [
     "release_speed",
     "launch_speed",
     "launch_angle",
+    "hc_x",
+    "hc_y",
+    "bb_type",
     "balls",
     "strikes",
 ]

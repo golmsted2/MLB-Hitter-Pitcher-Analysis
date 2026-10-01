@@ -5,7 +5,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 ## Site pages
 
 - `index.html` is the scrollable report page. It presents eight findings, headline numbers, charts, an interactive month-highlighting explorer, chart annotations, a reading-progress bar, jump links, and the data/method notes.
-- `dashboard.html` is the interactive dashboard. It loads the CSV in the browser and recalculates cards, charts, the table, live player-search suggestions, a two-player comparison, and an inline pitcher-versus-batter player section when controls change.
+- `dashboard.html` is the interactive dashboard. It loads the CSV in the browser and recalculates cards, charts, the table, live player-search suggestions, a filtered spray chart, a two-player comparison, and an inline pitcher-versus-batter player section when controls change.
 - `styles.css` contains the shared layout, colors, typography, responsive behavior, and dashboard styles.
 - `theme.js` controls the shared light/dark mode switch and remembers the selected theme in the browser.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.
@@ -30,11 +30,11 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 
 ## Data source
 
-The raw data comes from MLB Advanced Media’s public Baseball Savant Statcast search export. Baseball Savant’s [CSV documentation](https://baseballsavant.mlb.com/csv-docs) defines the fields used here, including `game_date`, `pitch_type`, `pitcher`, `batter`, `events`, `description`, `stand`, `p_throws`, `release_speed`, `launch_speed`, and `launch_angle`.
+The raw data comes from MLB Advanced Media’s public Baseball Savant Statcast search export. Baseball Savant’s [CSV documentation](https://baseballsavant.mlb.com/csv-docs) defines the fields used here, including `game_date`, `pitch_type`, `pitcher`, `batter`, `events`, `description`, `stand`, `p_throws`, `release_speed`, `launch_speed`, `launch_angle`, `hc_x`, `hc_y`, and `bb_type`.
 
 The game-action images come from MLB’s official image CDN: [Paul Skenes pitching](https://www.mlb.com/ja/news/starting-pitcher-power-rankings-yoshinobu-yamamoto-7th) and [Aaron Judge batting](https://www.mlb.com/video/jordan-hicks-in-play-no-out-to-aaron-judge-jzybkd). They identify Paul Skenes and Aaron Judge, both of whom appear in the published player-name file.
 
-The published data meets the project requirements: it has 3,567,064 rows, 20 columns, 36 monthly samples across five seasons, and more than ten pitchers and batters. The event-level structure allows a pitch to belong to both a pitcher and a batter. Missing `events` and launch measurements are retained because they are natural features of pitch-level data; each rate uses the appropriate non-missing denominator.
+The published data meets the project requirements: it has 3,567,064 rows, 23 columns, 36 monthly samples across five seasons, and more than ten pitchers and batters. The event-level structure allows a pitch to belong to both a pitcher and a batter. Missing `events`, launch measurements, and contact-location fields are retained because they are natural features of pitch-level data; each rate uses the appropriate non-missing denominator.
 
 ## Reproducing the report numbers
 

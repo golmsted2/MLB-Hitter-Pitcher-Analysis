@@ -36,7 +36,7 @@ def main() -> None:
     assert not missing, f"Missing files: {missing}"
 
     categorical = ["pitch_type", "p_throws", "stand", "home_team"]
-    numeric = ["release_speed", "launch_speed", "launch_angle", "balls", "strikes"]
+    numeric = ["release_speed", "launch_speed", "launch_angle", "hc_x", "hc_y", "balls", "strikes"]
     required_columns = ["season", "month", "pitcher", "batter", *categorical, *numeric]
     manifest = json.loads((ROOT / "data" / "data_files.json").read_text(encoding="utf-8"))
     assert len(manifest) >= 30, len(manifest)
@@ -88,6 +88,7 @@ def main() -> None:
     assert dashboard.count('id="filter-') >= 4
     assert 'id="reset-filters"' in dashboard
     assert 'id="summary-table"' in dashboard
+    assert 'id="spray-chart"' in dashboard
     assert 'id="selected-matchup-title"' in dashboard
     assert 'id="selected-pitcher-image"' in dashboard
     assert 'id="selected-batter-image"' in dashboard

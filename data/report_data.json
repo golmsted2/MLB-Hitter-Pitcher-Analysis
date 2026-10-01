@@ -24,32 +24,32 @@
     {
       "pitch_type": "FF",
       "pitch_name": "4-Seam Fastball",
-      "pitches": 1169543,
+      "pitches": 1169548,
       "share": 32.79
-    },
-    {
-      "pitch_type": "SI",
-      "pitch_name": "Sinker",
-      "pitches": 550572,
-      "share": 15.43
     },
     {
       "pitch_type": "SL",
       "pitch_name": "Slider",
-      "pitches": 550571,
+      "pitches": 553120,
+      "share": 15.51
+    },
+    {
+      "pitch_type": "SI",
+      "pitch_name": "Sinker",
+      "pitches": 550563,
       "share": 15.43
     },
     {
       "pitch_type": "CH",
       "pitch_name": "Changeup",
-      "pitches": 382723,
+      "pitches": 382762,
       "share": 10.73
     },
     {
       "pitch_type": "FC",
       "pitch_name": "Cutter",
-      "pitches": 273335,
-      "share": 7.66
+      "pitches": 270790,
+      "share": 7.59
     },
     {
       "pitch_type": "CU",
@@ -60,13 +60,13 @@
     {
       "pitch_type": "ST",
       "pitch_name": "Sweeper",
-      "pitches": 201354,
+      "pitches": 201355,
       "share": 5.64
     },
     {
       "pitch_type": "FS",
       "pitch_name": "Split-Finger",
-      "pitches": 83909,
+      "pitches": 83869,
       "share": 2.35
     },
     {
@@ -86,37 +86,37 @@
     {
       "pitch_type": "FF",
       "pitch_name": "4-Seam Fastball",
-      "pitches": 1169532,
+      "pitches": 1169537,
       "avg_speed": 94.1
     },
     {
       "pitch_type": "SI",
       "pitch_name": "Sinker",
-      "pitches": 550569,
+      "pitches": 550560,
       "avg_speed": 93.36
     },
     {
       "pitch_type": "FC",
       "pitch_name": "Cutter",
-      "pitches": 273330,
-      "avg_speed": 89.23
+      "pitches": 270785,
+      "avg_speed": 89.24
     },
     {
       "pitch_type": "FS",
       "pitch_name": "Split-Finger",
-      "pitches": 83909,
-      "avg_speed": 86.5
+      "pitches": 83869,
+      "avg_speed": 86.51
     },
     {
       "pitch_type": "SL",
       "pitch_name": "Slider",
-      "pitches": 550562,
-      "avg_speed": 85.49
+      "pitches": 553111,
+      "avg_speed": 85.5
     },
     {
       "pitch_type": "CH",
       "pitch_name": "Changeup",
-      "pitches": 382717,
+      "pitches": 382756,
       "avg_speed": 85.36
     },
     {
@@ -128,7 +128,7 @@
     {
       "pitch_type": "ST",
       "pitch_name": "Sweeper",
-      "pitches": 201348,
+      "pitches": 201349,
       "avg_speed": 82.0
     },
     {

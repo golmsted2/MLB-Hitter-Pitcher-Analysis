@@ -31,6 +31,12 @@
   --chip-bg: rgba(255,255,255,0.62);
   --select-bg: #fbfcfa;
   --table-hover: #fff5f4;
+  --spray-bg: #edf5f0;
+  --spray-grass: #dceee5;
+  --spray-line: #8bb49e;
+  --spray-dirt: #c99b76;
+  --spray-hit: #d7473f;
+  --spray-out: #246b9c;
   --shadow: 0 18px 44px rgba(20, 38, 56, 0.1);
   --radius: 18px;
 }
@@ -64,6 +70,12 @@ html[data-theme="dark"] {
   --chip-bg: rgba(21,43,59,0.86);
   --select-bg: #102331;
   --table-hover: #203545;
+  --spray-bg: #102331;
+  --spray-grass: #183d3a;
+  --spray-line: #72a995;
+  --spray-dirt: #9a725b;
+  --spray-hit: #f27d75;
+  --spray-out: #67b7e0;
   --shadow: 0 18px 44px rgba(0, 0, 0, 0.26);
 }
 
@@ -257,6 +269,15 @@ select:focus, input[type="search"]:focus { border-color: var(--orange); box-shad
 .player-team-badge { align-items: center; color: var(--muted); display: flex; font: 500 0.7rem "DM Mono", monospace; gap: 8px; margin: 0 0 12px; text-transform: uppercase; }
 .team-badge-logo { height: 25px; object-fit: contain; width: 30px; }
 .team-badge-mark { align-items: center; border-radius: 6px; color: #fff; display: inline-flex; font-size: 0.58rem; height: 25px; justify-content: center; min-width: 30px; padding: 0 5px; }
+.spray-chart-card { margin-bottom: 26px; }
+.spray-chart-description { color: var(--body-copy); font-size: 0.82rem; margin: 0 0 15px; }
+.spray-chart-wrap { background: var(--spray-bg); border: 1px solid var(--line); border-radius: 14px; height: 360px; overflow: hidden; }
+#spray-chart { display: block; width: 100%; }
+.spray-legend { align-items: center; color: var(--muted); display: flex; flex-wrap: wrap; font: 500 0.66rem "DM Mono", monospace; gap: 13px; }
+.spray-legend span { align-items: center; display: inline-flex; gap: 6px; }
+.spray-dot { border-radius: 50%; display: inline-block; height: 9px; width: 9px; }
+.spray-hit-dot { background: var(--spray-hit); }
+.spray-out-dot { background: var(--spray-out); }
 .stat-grid { grid-template-columns: repeat(6, 1fr); margin-bottom: 26px; }
 .stat-card { min-height: 104px; }
 .stat-card strong { font-size: 1.65rem; }

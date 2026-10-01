@@ -524,11 +524,102 @@ function updateTable(groups, metric) {
   document.getElementById("table-note").textContent = `${groups.length} groups · ${Math.min(groups.length, 20)} shown`;
 }
 
+let sprayRows = [];
+
+function sprayColor(name, fallback) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+
+function drawSprayChart(rows) {
+  const canvas = document.getElementById("spray-chart");
+  const note = document.getElementById("spray-chart-note");
+  if (!canvas || !note) return;
+  sprayRows = rows;
+  const trackedBalls = rows.filter(isBattedBall);
+  const points = trackedBalls.filter((row) => isFiniteNumber(row.hc_x) && isFiniteNumber(row.hc_y));
+  const plotStep = Math.max(1, Math.ceil(points.length / 6000));
+  const plotPoints = points.filter((_, index) => index % plotStep === 0);
+  note.textContent = points.length ? `${formatNumber(points.length)} balls in play with location data · ${formatNumber(trackedBalls.length)} tracked batted balls${plotStep > 1 ? ` · showing ${formatNumber(plotPoints.length)} points` : ""}` : "No batted-ball location data matches these filters.";
+
+  const width = Math.max(canvas.parentElement.clientWidth, 320);
+  const height = 360;
+  const pixelRatio = window.devicePixelRatio || 1;
+  canvas.width = width * pixelRatio;
+  canvas.height = height * pixelRatio;
+  canvas.style.height = `${height}px`;
+  const context = canvas.getContext("2d");
+  context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  context.clearRect(0, 0, width, height);
+
+  const padding = 20;
+  const mapX = (value) => padding + Math.max(0, Math.min(250, value)) * ((width - padding * 2) / 250);
+  const mapY = (value) => padding + Math.max(0, Math.min(230, value)) * ((height - padding * 2) / 230);
+  const home = { x: mapX(125), y: mapY(205) };
+  const leftFence = { x: mapX(8), y: mapY(22) };
+  const centerFence = { x: mapX(125), y: mapY(4) };
+  const rightFence = { x: mapX(242), y: mapY(22) };
+
+  context.fillStyle = sprayColor("--spray-bg", "#edf5f0");
+  context.fillRect(0, 0, width, height);
+  context.beginPath();
+  context.moveTo(home.x, home.y);
+  context.lineTo(leftFence.x, leftFence.y);
+  context.quadraticCurveTo(centerFence.x, mapY(-25), rightFence.x, rightFence.y);
+  context.closePath();
+  context.fillStyle = sprayColor("--spray-grass", "#dceee5");
+  context.fill();
+  context.strokeStyle = sprayColor("--spray-line", "#8bb49e");
+  context.lineWidth = 2;
+  context.stroke();
+
+  context.beginPath();
+  context.moveTo(home.x, home.y);
+  context.lineTo(leftFence.x, leftFence.y);
+  context.moveTo(home.x, home.y);
+  context.lineTo(rightFence.x, rightFence.y);
+  context.stroke();
+  context.beginPath();
+  context.arc(home.x, home.y, Math.min(width * 0.23, 82), Math.PI * 1.08, Math.PI * 1.92);
+  context.strokeStyle = sprayColor("--spray-dirt", "#c99b76");
+  context.lineWidth = 18;
+  context.stroke();
+
+  const bases = [{ x: 125, y: 205 }, { x: 105, y: 185 }, { x: 125, y: 165 }, { x: 145, y: 185 }];
+  context.fillStyle = sprayColor("--spray-dirt", "#c99b76");
+  context.beginPath();
+  bases.forEach((base, index) => { if (index === 0) context.moveTo(mapX(base.x), mapY(base.y)); else context.lineTo(mapX(base.x), mapY(base.y)); });
+  context.closePath();
+  context.fill();
+  context.fillStyle = sprayColor("--spray-line", "#ffffff");
+  bases.slice(1).forEach((base) => context.fillRect(mapX(base.x) - 3, mapY(base.y) - 3, 6, 6));
+  context.beginPath();
+  context.moveTo(home.x - 5, home.y + 2);
+  context.lineTo(home.x, home.y + 7);
+  context.lineTo(home.x + 5, home.y + 2);
+  context.lineTo(home.x + 5, home.y - 4);
+  context.lineTo(home.x - 5, home.y - 4);
+  context.closePath();
+  context.fill();
+
+  plotPoints.forEach((row) => {
+    const isHit = HIT_EVENTS.has(row.events);
+    context.beginPath();
+    context.arc(mapX(Number(row.hc_x)), mapY(Number(row.hc_y)), 3.5, 0, Math.PI * 2);
+    context.fillStyle = isHit ? sprayColor("--spray-hit", "#d7473f") : sprayColor("--spray-out", "#246b9c");
+    context.globalAlpha = 0.68;
+    context.fill();
+    context.globalAlpha = 1;
+  });
+}
+
+window.addEventListener("resize", () => drawSprayChart(sprayRows));
+
 function updateDashboard() {
   const rows = filteredRows();
   const metric = document.getElementById("metric-select").value;
   const breakdown = document.getElementById("breakdown-select").value;
   updateStats(rows);
+  drawSprayChart(rows);
   updateComparison(rows, metric, breakdown);
   updateTrend(rows, metric);
   updateMix(rows);
@@ -601,13 +692,13 @@ async function loadDashboardData() {
       console.warn("Player names could not be loaded; MLB IDs will be shown.", error);
     }
 
-    const manifestResponse = await fetch("data/data_files.json?v=1", { cache: "no-store" });
+    const manifestResponse = await fetch("data/data_files.json?v=2", { cache: "no-store" });
     if (!manifestResponse.ok) throw new Error(`Data manifest request failed (${manifestResponse.status})`);
     DATA_FILES = await manifestResponse.json();
     if (!Array.isArray(DATA_FILES) || !DATA_FILES.length) throw new Error("The data manifest contained no CSV files");
     if (typeof Papa === "undefined") throw new Error("Papa Parse did not load");
     for (let index = 0; index < DATA_FILES.length; index += 1) {
-      const response = await fetch(`${DATA_FILES[index]}?v=5`, { cache: "no-store" });
+      const response = await fetch(`${DATA_FILES[index]}?v=6`, { cache: "no-store" });
       if (!response.ok) throw new Error(`CSV request failed (${response.status})`);
       status.textContent = `Loading data file ${index + 1} of ${DATA_FILES.length}…`;
       const csvText = await response.text();
@@ -636,6 +727,8 @@ async function loadDashboardData() {
           inning_topbot: row.inning_topbot,
           release_speed: row.release_speed,
           launch_speed: row.launch_speed,
+          hc_x: row.hc_x,
+          hc_y: row.hc_y,
         };
         allRows.push(normalizedRow);
         recordPlayerTeam("pitcher", normalizedRow.pitcher, playerTeamForRow(normalizedRow, "pitcher"));

@@ -147,6 +147,19 @@
         </div>
       </section>
 
+      <section class="spray-chart-card dashboard-card" aria-labelledby="spray-chart-title">
+        <div class="chart-card-heading">
+          <div>
+            <p class="section-kicker">Contact map</p>
+            <h2 id="spray-chart-title">Where are balls in play landing?</h2>
+          </div>
+          <div class="spray-legend" aria-label="Spray chart legend"><span><i class="spray-dot spray-hit-dot"></i>Hits</span><span><i class="spray-dot spray-out-dot"></i>Other outs</span></div>
+        </div>
+        <p class="spray-chart-description">This field view uses Statcast contact coordinates and updates with the filters above. Select a batter to focus on one hitter’s spray profile.</p>
+        <div class="spray-chart-wrap"><canvas id="spray-chart" aria-label="Spray chart of filtered balls in play"></canvas></div>
+        <p class="table-note" id="spray-chart-note">Loading batted-ball locations…</p>
+      </section>
+
       <section class="dashboard-content is-loading" id="dashboard-content" aria-live="polite">
         <div class="stat-grid" id="dashboard-stats">
           <div class="stat-card"><span class="card-label">Visible pitches</span><strong id="stat-pitches">—</strong></div>
@@ -233,6 +246,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.3/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-    <script src="dashboard.js?v=12"></script>
+    <script src="dashboard.js?v=13"></script>
   </body>
 </html>

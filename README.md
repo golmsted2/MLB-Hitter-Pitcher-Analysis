@@ -10,7 +10,7 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 - `loading-screen.js` controls the shared stadium broadcast loading transition used by both pages.
 - `theme.js` controls the shared light/dark mode switch and remembers the selected theme in the browser.
 - `assets/baseball-favicon.svg` is the baseball icon shown in the browser tab.
-- `assets/loading-baseball.png` is the photorealistic baseball used in the loading-screen pitch animation.
+- `assets/loading-baseball.png` is the transparent official Rawlings ROMLB MLB baseball used in the loading-screen pitch animation.
 - `assets/loading-stadium.png` is the realistic night-stadium backdrop used by the loading screen.
 - `assets/mlb-pitcher-action.jpg` and `assets/mlb-hitter-action.jpg` are official MLB game-action images used in the report and dashboard artwork. They are stored locally so the published site does not depend on remote image loading.
 - `report.js` loads `data/report_data.json`, fills the report prose, and creates the eight report charts.
@@ -36,6 +36,8 @@ An interactive Financial Data Analytics project about pitcher–hitter matchups.
 The raw data comes from MLB Advanced Media’s public Baseball Savant Statcast search export. Baseball Savant’s [CSV documentation](https://baseballsavant.mlb.com/csv-docs) defines the fields used here, including `game_date`, `pitch_type`, `pitcher`, `batter`, `events`, `description`, `stand`, `p_throws`, `release_speed`, `launch_speed`, `launch_angle`, `hc_x`, `hc_y`, and `bb_type`.
 
 The game-action images come from MLB’s official image CDN: [Paul Skenes pitching](https://www.mlb.com/ja/news/starting-pitcher-power-rankings-yoshinobu-yamamoto-7th) and [Aaron Judge batting](https://www.mlb.com/video/jordan-hicks-in-play-no-out-to-aaron-judge-jzybkd). They identify Paul Skenes and Aaron Judge, both of whom appear in the published player-name file.
+
+The loading baseball is based on the official [Rawlings MLB Official Baseball with Display Cube](https://www.rawlings.com/product/EA-ROMLB-R.html?cgid=gear) product image. Rawlings lists the ROMLB-R as an MLB baseball with the Rawlings mark, MLB markings, and commissioner signature; the project uses a transparent cutout of that official product image for the animation.
 
 The published data meets the project requirements: it has 3,567,064 rows, 23 columns, 36 monthly samples across five seasons, and more than ten pitchers and batters. The event-level structure allows a pitch to belong to both a pitcher and a batter. Missing `events`, launch measurements, and contact-location fields are retained because they are natural features of pitch-level data; each rate uses the appropriate non-missing denominator. The dashboard’s average exit velocity and hard-hit rate use only pitches recorded as `hit_into_play` with a non-missing `launch_speed`.
 

@@ -9,7 +9,7 @@
   const hide = () => {
     if (hidden) return;
     hidden = true;
-    const minimumTime = reducedMotion ? 100 : 1450;
+    const minimumTime = reducedMotion ? 100 : 1950;
     const elapsed = performance.now() - startedAt;
     window.setTimeout(() => {
       screen.classList.add("is-exiting");
